@@ -122,6 +122,8 @@ namespace QuickLauncher
 
         private void listProfiles(string path)
         {
+            int totalHeight = 0;
+
             string[] profiles = Directory.GetFiles(path, "*.json");
             int widthspacer = 38;
 
@@ -168,6 +170,17 @@ namespace QuickLauncher
             {
                 akiPort = 6969;
             }
+
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl is Label lbl)
+                {
+                    totalHeight += lbl.Height;
+                }
+            }
+
+            int padding = 55;
+            MinimumSize = new Size(this.Size.Width, totalHeight + panelBottom.Size.Height + padding);
         }
 
         private void lbl_MouseEnter(object sender, EventArgs e)
@@ -711,6 +724,11 @@ namespace QuickLauncher
                     this.Show();
                 }
             }
+        }
+
+        private void btnReload_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
         }
     }
 }
