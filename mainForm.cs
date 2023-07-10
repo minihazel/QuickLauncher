@@ -24,6 +24,7 @@ namespace QuickLauncher
 
         public string currentDir = $"E:\\SPT Iterations\\SPT-AKI 3.5.8";
         public string ipAddress;
+        public string currentAID;
         public int akiPort;
 
         public Process server;
@@ -140,7 +141,6 @@ namespace QuickLauncher
                 lbl.MouseEnter += new EventHandler(lbl_MouseEnter);
                 lbl.MouseLeave += new EventHandler(lbl_MouseLeave);
                 lbl.MouseDown += new MouseEventHandler(lbl_MouseDown);
-                lbl.MouseDoubleClick += new MouseEventHandler(lbl_MouseDoubleClick);
                 lbl.MouseUp += new MouseEventHandler(lbl_MouseUp);
                 this.Controls.Add(lbl);
             }
@@ -193,6 +193,7 @@ namespace QuickLauncher
             }
         }
 
+        // When a profile is clicked
         private void lbl_MouseDown(object sender, EventArgs e)
         {
             System.Windows.Forms.Label label = (System.Windows.Forms.Label)sender;
@@ -202,36 +203,12 @@ namespace QuickLauncher
                 if (label.BackColor == listHovercolor)
                 {
                     label.BackColor = listSelectedcolor;
-                    checkWorker();
+                    currentAID = label.Text;
+                    runServer();
                 }
                 else
                 {
                     label.BackColor = listHovercolor;
-                }
-            }
-        }
-
-        private void lbl_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            System.Windows.Forms.Label label = (System.Windows.Forms.Label)sender;
-
-            if (label.Text != "")
-            {
-                Color activeColor = Color.DodgerBlue;
-                Button associatedBtn = null;
-
-                foreach (Control component in this.Controls)
-                {
-                    if (component is Button btn && btn.FlatAppearance.BorderColor == Color.DodgerBlue)
-                    {
-                        associatedBtn = btn;
-                        break;
-                    }
-                }
-
-                if (associatedBtn != null)
-                {
-                    label.BackColor = listSelectedcolor;
                 }
             }
         }
@@ -421,7 +398,7 @@ namespace QuickLauncher
                 Process[] processes = Process.GetProcessesByName(processName);
                 if (processes.Length == 0)
                 {
-                    killProcesses();
+                    killProcesses(true);
 
                     if (TarkovEndDetector != null)
                         TarkovEndDetector.Dispose();
@@ -443,7 +420,7 @@ namespace QuickLauncher
 
 
 
-        private void killProcesses()
+        private void killProcesses(bool isExit)
         {
             string akiServerProcess = "Aki.Server";
             string akiLauncherProcess = "Aki.Launcher";
@@ -581,7 +558,8 @@ namespace QuickLauncher
                         if (TarkovProcessDetector != null)
                             TarkovProcessDetector.Dispose();
 
-                        Application.Exit();
+                        if (isExit)
+                            Application.Exit();
                     }
                     catch (Exception err)
                     {
@@ -597,6 +575,31 @@ namespace QuickLauncher
             catch (Exception err)
             {
                 Debug.WriteLine($"TERMINATION FAILURE (IGNORE): {err.ToString()}");
+            }
+        }
+
+        private void runServer()
+        {
+            killProcesses(false);
+            Task.Delay(500);
+
+            server = new Process();
+            server.StartInfo.WorkingDirectory = currentDir;
+            server.StartInfo.FileName = "Aki.Server.exe";
+            server.StartInfo.CreateNoWindow = true;
+            server.StartInfo.UseShellExecute = false;
+            server.StartInfo.RedirectStandardOutput = true;
+            server.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+
+            try
+            {
+                server.Start();
+                checkWorker();
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"ERROR: {err.ToString()}");
+                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
             }
         }
 
@@ -633,6 +636,9 @@ namespace QuickLauncher
             }
 
             Task.Delay(5000);
+
+            ProcessStartInfo tarkovInfo = new ProcessStartInfo();
+
 
             TarkovEndDetector = new BackgroundWorker();
             TarkovEndDetector.DoWork += TarkovEndDetector_DoWork;
