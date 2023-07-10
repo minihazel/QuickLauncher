@@ -34,7 +34,6 @@ namespace QuickLauncher
         BackgroundWorker CheckServerWorker;
         public BackgroundWorker TarkovProcessDetector;
         public BackgroundWorker TarkovEndDetector;
-        public BackgroundWorker globalProcessDetector;
         public StringBuilder akiServerOutputter;
 
         protected override void WndProc(ref Message m)
@@ -80,6 +79,8 @@ namespace QuickLauncher
         {
             if (Directory.Exists(currentDir))
             {
+                lblLimit1.Select();
+
                 string userFolder = Path.Combine(currentDir, "user");
                 if (Directory.Exists(userFolder))
                 {
@@ -113,6 +114,10 @@ namespace QuickLauncher
             Application.Exit();
         }
 
+
+
+        // LISTING AND LISTING EVENTS
+
         private void listProfiles(string path)
         {
             string[] profiles = Directory.GetFiles(path, "*.json");
@@ -138,6 +143,29 @@ namespace QuickLauncher
                 lbl.MouseDoubleClick += new MouseEventHandler(lbl_MouseDoubleClick);
                 lbl.MouseUp += new MouseEventHandler(lbl_MouseUp);
                 this.Controls.Add(lbl);
+            }
+
+            string portFile = Path.Combine(currentDir, "Aki_Data");
+            portFile = Path.Combine(portFile, "Server");
+            portFile = Path.Combine(portFile, "database");
+            portFile = Path.Combine(portFile, "server.json");
+            bool portExists = File.Exists(portFile);
+
+            if (portExists)
+            {
+                string read = File.ReadAllText(portFile);
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                var json = serializer.DeserializeObject(read);
+                Dictionary<string, object> profile = (Dictionary<string, object>)json;
+
+                string ip = profile["ip"].ToString();
+
+                ipAddress = ip;
+                akiPort = Convert.ToInt32(profile["port"]);
+            }
+            else
+            {
+                akiPort = 6969;
             }
         }
 
@@ -217,6 +245,10 @@ namespace QuickLauncher
             }
         }
 
+        // LISTING AND LISTING EVENTS
+
+
+
         private string displayProfileName(string path)
         {
             string result = "";
@@ -257,6 +289,30 @@ namespace QuickLauncher
             return result;
         }
 
+        private bool CheckPort(int port)
+        {
+            try
+            {
+                using (var client = new TcpClient())
+                {
+                    if (CheckServerWorker != null)
+                        CheckServerWorker.Dispose();
+
+                    client.Connect(ipAddress, port);
+
+                    runTarkov();
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
+        // BACKGROUND PROCESSES
+
         private void checkWorker()
         {
             CheckServerWorker = new BackgroundWorker();
@@ -281,31 +337,7 @@ namespace QuickLauncher
 
         private void CheckServerWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            string portFile = Path.Combine(currentDir, "Aki_Data");
-            portFile = Path.Combine(portFile, "Server");
-            portFile = Path.Combine(portFile, "database");
-            portFile = Path.Combine(portFile, "server.json");
-            bool portExists = File.Exists(portFile);
-
-            if (portExists)
-            {
-                string read = File.ReadAllText(portFile);
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                var json = serializer.DeserializeObject(read);
-                Dictionary<string, object> profile = (Dictionary<string, object>)json;
-
-                string ip = profile["ip"].ToString();
-
-                ipAddress = ip;
-                akiPort = Convert.ToInt32(profile["port"]);
-            }
-            else
-            {
-                akiPort = 6969;
-            }
-
             int port = akiPort; // the port to check
-
             int timeout = 0;
             switch (timeoutLimit.Value)
             {
@@ -360,33 +392,12 @@ namespace QuickLauncher
                               "\n" +
                               "Max duration reached, launching SPT-AKI.");
 
-                    runLauncher();
+                    runTarkov();
                     return;
                 }
 
                 Thread.Sleep(delay); // wait before checking again
                 elapsed += delay;
-            }
-        }
-
-        private bool CheckPort(int port)
-        {
-            try
-            {
-                using (var client = new TcpClient())
-                {
-                    if (CheckServerWorker != null)
-                        CheckServerWorker.Dispose();
-
-                    client.Connect(ipAddress, port);
-
-                    runLauncher();
-                    return true;
-                }
-            }
-            catch (Exception)
-            {
-                return false;
             }
         }
 
@@ -402,9 +413,231 @@ namespace QuickLauncher
             }
         }
 
-        private void runLauncher()
+        private void TarkovEndDetector_DoWork(object sender, DoWorkEventArgs e)
         {
+            string processName = "EscapeFromTarkov";
+            while (true)
+            {
+                Process[] processes = Process.GetProcessesByName(processName);
+                if (processes.Length == 0)
+                {
+                    killProcesses();
 
+                    if (TarkovEndDetector != null)
+                        TarkovEndDetector.Dispose();
+
+                    break;
+                }
+
+                System.Threading.Thread.Sleep(1000);
+            }
+        }
+
+        private void TarkovEndDetector_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (TarkovEndDetector != null)
+                TarkovEndDetector.Dispose();
+        }
+
+        // BACKGROUND PROCESSES
+
+
+
+        private void killProcesses()
+        {
+            string akiServerProcess = "Aki.Server";
+            string akiLauncherProcess = "Aki.Launcher";
+            string eftProcess = "EscapeFromTarkov";
+            bool akiServerTerminated = false;
+            bool akiLauncherTerminated = false;
+            bool eftTerminated = false;
+
+            try
+            {
+                Process[] procs = Process.GetProcessesByName(akiServerProcess);
+                if (procs != null && procs.Length > 0)
+                {
+                    foreach (Process aki in procs)
+                    {
+                        if (!aki.HasExited)
+                        {
+                            if (!aki.CloseMainWindow())
+                            {
+                                aki.Kill();
+                                aki.WaitForExit();
+                            }
+                            else
+                            {
+                                aki.WaitForExit();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"TERMINATION FAILURE OF AKI SERVER (IGNORE): {err.ToString()}");
+            }
+
+            Task.Delay(200);
+
+            try
+            {
+                Process[] procs = Process.GetProcessesByName(akiLauncherProcess);
+                if (procs != null && procs.Length > 0)
+                {
+                    foreach (Process aki in procs)
+                    {
+                        if (!aki.HasExited)
+                        {
+                            if (!aki.CloseMainWindow())
+                            {
+                                aki.Kill();
+                                aki.WaitForExit();
+                            }
+                            else
+                            {
+                                aki.WaitForExit();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"TERMINATION FAILURE OF AKI LAUNCHER (IGNORE): {err.ToString()}");
+            }
+
+            Task.Delay(200);
+
+            try
+            {
+                Process[] procs = Process.GetProcessesByName(eftProcess);
+                if (procs != null && procs.Length > 0)
+                {
+                    foreach (Process aki in procs)
+                    {
+                        if (!aki.HasExited)
+                        {
+                            if (!aki.CloseMainWindow())
+                            {
+                                aki.Kill();
+                                aki.WaitForExit();
+                            }
+                            else
+                            {
+                                aki.WaitForExit();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"TERMINATION FAILURE OF AKI LAUNCHER (IGNORE): {err.ToString()}");
+            }
+
+            Task.Delay(500);
+
+            try
+            {
+                Process[] procs1 = Process.GetProcessesByName(akiServerProcess);
+                if (procs1 != null && procs1.Length > 0)
+                {
+                }
+                else
+                {
+                    akiServerTerminated = true;
+                }
+
+                Process[] procs2 = Process.GetProcessesByName(akiLauncherProcess);
+                if (procs2 != null && procs2.Length > 0)
+                {
+                }
+                else
+                {
+                    akiLauncherTerminated = true;
+                }
+
+                Process[] procs3 = Process.GetProcessesByName(eftProcess);
+                if (procs3 != null && procs3.Length > 0)
+                {
+                }
+                else
+                {
+                    eftTerminated = true;
+                }
+
+                if (akiServerTerminated && akiLauncherTerminated && eftTerminated)
+                {
+                    try
+                    {
+                        if (CheckServerWorker != null)
+                            CheckServerWorker.Dispose();
+
+                        if (TarkovEndDetector != null)
+                            TarkovEndDetector.Dispose();
+
+                        if (TarkovProcessDetector != null)
+                            TarkovProcessDetector.Dispose();
+
+                        Application.Exit();
+                    }
+                    catch (Exception err)
+                    {
+                        Debug.WriteLine($"DISPOSE FAILURE (IGNORE): {err.ToString()}");
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Failed to end one or more processs (Aki.Server, Aki.Launcher, Escape From Tarkov), cancelling exit.", this.Text, MessageBoxButtons.OK);
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"TERMINATION FAILURE (IGNORE): {err.ToString()}");
+            }
+        }
+
+        private void runTarkov()
+        {
+            string launcherProcess = "EscapeFromTarkov";
+            Process[] launchers = Process.GetProcessesByName(launcherProcess);
+
+            try
+            {
+                Process[] launcherprocs = Process.GetProcessesByName(launcherProcess);
+                if (launcherprocs != null && launcherprocs.Length > 1)
+                {
+                    foreach (Process eft in launcherprocs)
+                    {
+                        if (!eft.HasExited)
+                        {
+                            if (!eft.CloseMainWindow())
+                            {
+                                eft.Kill();
+                                eft.WaitForExit();
+                            }
+                            else
+                            {
+                                eft.WaitForExit();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"TERMINATION FAILURE LEFTOVERS AKI LAUNCHER (IGNORE): {err.ToString()}");
+            }
+
+            Task.Delay(5000);
+
+            TarkovEndDetector = new BackgroundWorker();
+            TarkovEndDetector.DoWork += TarkovEndDetector_DoWork;
+            TarkovEndDetector.RunWorkerCompleted += TarkovEndDetector_RunWorkerCompleted;
+            TarkovEndDetector.RunWorkerAsync();
         }
     }
 }
