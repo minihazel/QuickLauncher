@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -202,7 +203,7 @@ namespace QuickLauncher
             {
                 if (label.BackColor == listHovercolor)
                 {
-                    label.BackColor = listSelectedcolor;
+                    // label.BackColor = listSelectedcolor;
                     currentAID = label.Text;
                     runServer();
                 }
@@ -264,6 +265,43 @@ namespace QuickLauncher
             }
 
             return result;
+        }
+
+        private string displayAID(string nickname)
+        {
+            string result = "";
+            string userFolder = Path.Combine(currentDir, "user");
+
+            bool userFolderExists = Directory.Exists(userFolder);
+            if (userFolderExists)
+            {
+                string profilesFolder = Path.Combine(userFolder, "profiles");
+
+                bool profileFolderExists = Directory.Exists(profilesFolder);
+                if (profileFolderExists)
+                {
+                    string[] profiles = Directory.GetFiles(profilesFolder);
+                    for (int i = 0; i < profiles.Length; i++)
+                    {
+                        string read = File.ReadAllText(profiles[i]);
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        var json = serializer.DeserializeObject(read);
+                        Dictionary<string, object> profile = (Dictionary<string, object>)json;
+                        Dictionary<string, object> characters = (Dictionary<string, object>)profile["characters"];
+                        Dictionary<string, object> PMC = (Dictionary<string, object>)characters["pmc"];
+                        Dictionary<string, object> Info = (Dictionary<string, object>)PMC["Info"];
+
+                        string Nickname = Info["Nickname"].ToString();
+
+                        if (Nickname == nickname)
+                        {
+                            result = Path.GetFileName(profiles[i]).Replace(".json", "");
+                        }
+                    }
+                }
+            }
+
+            return result ?? "N/A";
         }
 
         private bool CheckPort(int port)
@@ -594,6 +632,7 @@ namespace QuickLauncher
             try
             {
                 server.Start();
+                // this.Hide();
                 checkWorker();
             }
             catch (Exception err)
@@ -638,12 +677,40 @@ namespace QuickLauncher
             Task.Delay(5000);
 
             ProcessStartInfo tarkovInfo = new ProcessStartInfo();
+            string name = Regex.Match(currentAID, @"^([\w\s]+)").Groups[1].Value.Trim();
+            string AID = displayAID(name) ?? "N/A";
 
+            if (AID == "N/A")
+            {
+                this.Show();
+                MessageBox.Show($"Couldn\'t find the profile, it appears there is no profile with nickname `{currentAID}`\n\nPlease select a different profile and try again.", this.Text, MessageBoxButtons.OK);
+            }
+            else
+            {
+                tarkovInfo.FileName = Path.Combine(currentDir, "EscapeFromTarkov");
+                tarkovInfo.Arguments = $"-force-gfx-jobs native -token={AID} -config={{\"BackendUrl\":\"http://{ipAddress}:{akiPort}\",\"Version\":\"live\"}}";
 
-            TarkovEndDetector = new BackgroundWorker();
-            TarkovEndDetector.DoWork += TarkovEndDetector_DoWork;
-            TarkovEndDetector.RunWorkerCompleted += TarkovEndDetector_RunWorkerCompleted;
-            TarkovEndDetector.RunWorkerAsync();
+                Process gameProcess = new Process();
+                gameProcess.StartInfo = tarkovInfo;
+
+                try
+                {
+                    gameProcess.Start();
+
+                    TarkovEndDetector = new BackgroundWorker();
+                    TarkovEndDetector.DoWork += TarkovEndDetector_DoWork;
+                    TarkovEndDetector.RunWorkerCompleted += TarkovEndDetector_RunWorkerCompleted;
+                    TarkovEndDetector.RunWorkerAsync();
+                }
+                catch (Exception err)
+                {
+                    Debug.WriteLine($"ERROR: {err.ToString()}");
+                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
+
+                    killProcesses(false);
+                    this.Show();
+                }
+            }
         }
     }
 }
