@@ -23,7 +23,7 @@ namespace QuickLauncher
         public Color listSelectedcolor = Color.FromArgb(255, 40, 40, 40);
         public Color listHovercolor = Color.FromArgb(255, 35, 35, 35);
 
-        public string currentDir = $"E:\\SPT Iterations\\SPT-AKI 3.5.8";
+        public string currentDir = Environment.CurrentDirectory;
         public string ipAddress;
         public string currentAID;
         public int akiPort;
@@ -79,7 +79,7 @@ namespace QuickLauncher
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-            if (Directory.Exists(currentDir))
+             if (Directory.Exists(currentDir))
             {
                 lblLimit1.Select();
 

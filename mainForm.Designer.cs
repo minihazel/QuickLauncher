@@ -122,11 +122,11 @@
             this.Controls.Add(this.panelBottom);
             this.Font = new System.Drawing.Font("Bahnschrift Light", 12F);
             this.ForeColor = System.Drawing.Color.LightGray;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "mainForm";
-            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "QuickLauncher";
             this.Load += new System.EventHandler(this.mainForm_Load);
