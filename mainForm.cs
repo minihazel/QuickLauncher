@@ -23,13 +23,15 @@ namespace QuickLauncher
         public Color listSelectedcolor = Color.FromArgb(255, 40, 40, 40);
         public Color listHovercolor = Color.FromArgb(255, 35, 35, 35);
 
-        public string currentDir = Environment.CurrentDirectory;
-        public string ipAddress;
-        public string currentAID;
-        public int akiPort;
+        public string currentDir = Environment.CurrentDirectory; /* $"E:\\SPT Iterations\\SPT-AKI 3.5.8"; */
 
-        public Process server;
-        public Process launcher;
+        public string currentAID;
+        public string ipAddress;
+        public int akiPort;
+        public StringBuilder serverOut;
+
+        public Process server = null;
+        public Process launcher = null;
         private List<string> globalProcesses;
 
         // background working
@@ -326,7 +328,8 @@ namespace QuickLauncher
                     if (CheckServerWorker != null)
                         CheckServerWorker.Dispose();
 
-                    client.Connect(ipAddress, port);
+                    client.Connect("127.0.0.1", port);
+                    Debug.WriteLine("Success");
 
                     runTarkov();
                     return true;
@@ -336,6 +339,12 @@ namespace QuickLauncher
             {
                 return false;
             }
+        }
+
+        private bool isServerOn()
+        {
+            Process[] servers = Process.GetProcessesByName("Aki.Server");
+            return servers.Length > 0;
         }
 
 
@@ -407,7 +416,7 @@ namespace QuickLauncher
             int delay = 1000; // the delay between port checks in milliseconds
             int elapsed = 0; // the time elapsed since starting to check the port
 
-            while (!CheckPort(port))
+            while (!CheckPort(akiPort))
             {
                 if (elapsed >= timeout)
                 {
@@ -467,12 +476,33 @@ namespace QuickLauncher
                 TarkovEndDetector.Dispose();
         }
 
+        private void server_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            string res = e.Data;
+            if (!string.IsNullOrEmpty(res))
+            {
+                res = Regex.Replace(res, @"\[[0-1];[0-9][a-z]|\[[0-9][0-9][a-z]|\[[0-9][a-z]|\[[0-9][A-Z]", String.Empty);
+            }
+
+            serverOut.AppendLine(res);
+        }
+
+        private void server_Exited(object sender, EventArgs e)
+        {
+        }
+
         // BACKGROUND PROCESSES
 
 
 
         private void killProcesses(bool isExit)
         {
+            server = null;
+            launcher = null;
+
+            if (serverOut != null)
+                serverOut.Clear();
+
             string akiServerProcess = "Aki.Server";
             string akiLauncherProcess = "Aki.Launcher";
             string eftProcess = "EscapeFromTarkov";
@@ -631,27 +661,46 @@ namespace QuickLauncher
 
         private void runServer()
         {
-            killProcesses(false);
+            bool isRunning = isServerOn();
             Task.Delay(500);
 
-            server = new Process();
-            server.StartInfo.WorkingDirectory = currentDir;
-            server.StartInfo.FileName = "Aki.Server.exe";
-            server.StartInfo.CreateNoWindow = true;
-            server.StartInfo.UseShellExecute = false;
-            server.StartInfo.RedirectStandardOutput = true;
-            server.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-
-            try
+            if (isRunning)
             {
-                server.Start();
-                // this.Hide();
+                this.Hide();
                 checkWorker();
             }
-            catch (Exception err)
+            else
             {
-                Debug.WriteLine($"ERROR: {err.ToString()}");
-                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
+                Task.Delay(500);
+
+                Directory.SetCurrentDirectory(currentDir);
+                Process server = new Process();
+
+                server.StartInfo.WorkingDirectory = currentDir;
+                server.StartInfo.FileName = "Aki.Server.exe";
+                server.StartInfo.CreateNoWindow = true;
+                server.StartInfo.UseShellExecute = false;
+                server.StartInfo.RedirectStandardOutput = true;
+                server.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+
+                server.OutputDataReceived += server_OutputDataReceived;
+                server.Exited += server_Exited;
+
+                try
+                {
+                    serverOut = new StringBuilder();
+                    server.Start();
+                    server.BeginOutputReadLine();
+
+                    this.Hide();
+                    checkWorker();
+                }
+                catch (Exception err)
+                {
+                    Debug.WriteLine($"ERROR: {err}");
+                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
+                }
+                Directory.SetCurrentDirectory(Environment.CurrentDirectory);
             }
         }
 
@@ -729,6 +778,11 @@ namespace QuickLauncher
         private void btnReload_Click(object sender, EventArgs e)
         {
             Application.Restart();
+        }
+
+        private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            killProcesses(true);
         }
     }
 }
