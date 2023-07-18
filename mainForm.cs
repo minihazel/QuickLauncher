@@ -219,8 +219,17 @@ namespace QuickLauncher
                 if (label.BackColor == listHovercolor)
                 {
                     // label.BackColor = listSelectedcolor;
-                    currentAID = label.Text;
-                    runServer();
+
+                    if (label.Text.ToLower() == ">> invalid profile hierarchy")
+                    {
+                        MessageBox.Show("This profile seems to have an improper profile structure. Cancelling load.\n\n\n" +
+                                        "The structure should be `<profileAID>.json` -> `characters` -> `pmc` -> `Info`", this.Text, MessageBoxButtons.OK);
+                    }
+                    else
+                    {
+                        currentAID = label.Text;
+                        runServer();
+                    }
                 }
                 else
                 {
@@ -251,32 +260,58 @@ namespace QuickLauncher
                 string read = File.ReadAllText(path);
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 var json = serializer.DeserializeObject(read);
+
                 Dictionary<string, object> profile = (Dictionary<string, object>)json;
-                Dictionary<string, object> characters = (Dictionary<string, object>)profile["characters"];
-                Dictionary<string, object> PMC = (Dictionary<string, object>)characters["pmc"];
-                Dictionary<string, object> Info = (Dictionary<string, object>)PMC["Info"];
-
-                string Nickname = Info["Nickname"].ToString();
-                int Level = Convert.ToInt32(Info["Level"]);
-                string Side = Info["Side"].ToString();
-                string GameVersion = Info["GameVersion"].ToString();
-
-                switch (GameVersion.ToLower())
+                if (profile.ContainsKey("characters") && profile["characters"] is Dictionary<string, object> characters)
                 {
-                    case "standard":
-                        GameVersion = "Standard";
-                        break;
-                    case "left_behind":
-                        GameVersion = "Left Behind";
-                        break;
-                    case "prepare_for_escape":
-                        GameVersion = "Prepare for Escape";
-                        break;
-                    case "edge_of_darkness":
-                        GameVersion = "EOD";
-                        break;
+                    if (characters.ContainsKey("pmc") && characters["pmc"] is Dictionary<string, object> PMC)
+                    {
+                        if (PMC.ContainsKey("Info") && PMC["Info"] is Dictionary<string, object> Info)
+                        {
+
+                            string Nickname = Info["Nickname"]?.ToString();
+                            int Level = Convert.ToInt32(Info["Level"]);
+                            string Side = Info["Side"]?.ToString();
+                            string GameVersion = Info["GameVersion"]?.ToString();
+
+                            if (Nickname != null && Level != null && Side != null && GameVersion != null)
+                            {
+                                switch (GameVersion.ToLower())
+                                {
+                                    case "standard":
+                                        GameVersion = "Standard";
+                                        break;
+                                    case "left_behind":
+                                        GameVersion = "Left Behind";
+                                        break;
+                                    case "prepare_for_escape":
+                                        GameVersion = "Prepare for Escape";
+                                        break;
+                                    case "edge_of_darkness":
+                                        GameVersion = "EOD";
+                                        break;
+                                }
+                                result = $"{Nickname}  [{Side.ToUpper()}] [Lvl {Level.ToString()}] [{GameVersion.ToString()}]";
+                            }
+                            else
+                            {
+                                result = ">> Invalid profile hierarchy";
+                            }
+                        }
+                        else
+                        {
+                            result = ">> Invalid profile hierarchy";
+                        }
+                    }
+                    else
+                    {
+                        result = ">> Invalid profile hierarchy";
+                    }
                 }
-                result = $"{Nickname}  [{Side.ToUpper()}] [Lvl {Level.ToString()}] [{GameVersion.ToString()}]";
+                else
+                {
+                    result = ">> Invalid profile hierarchy";
+                }
             }
 
             return result;
