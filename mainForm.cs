@@ -785,7 +785,7 @@ namespace QuickLauncher
             else
             {
                 tarkovInfo.FileName = Path.Combine(currentDir, "EscapeFromTarkov");
-                tarkovInfo.Arguments = $"-force-gfx-jobs native -token={AID} -config={{\"BackendUrl\":\"http://{ipAddress}:{akiPort}\",\"Version\":\"live\"}}";
+                tarkovInfo.Arguments = $"-token={AID} -config={{\"BackendUrl\":\"http://{ipAddress}:{akiPort}\",\"Version\":\"live\"}}";
 
                 Process gameProcess = new Process();
                 gameProcess.StartInfo = tarkovInfo;
