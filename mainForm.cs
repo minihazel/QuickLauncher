@@ -811,7 +811,13 @@ namespace QuickLauncher
                     TarkovEndDetector.RunWorkerCompleted += TarkovEndDetector_RunWorkerCompleted;
                     TarkovEndDetector.RunWorkerAsync();
 
-                    startTime = DateTime.Now;
+                    bool playtimeExists = File.Exists(playtimeFile);
+                    if (playtimeExists)
+                    {
+                        int previousSeconds = int.Parse(File.ReadAllText(playtimeFile));
+                        TimeSpan elapsedDuration = TimeSpan.FromSeconds(previousSeconds);
+                        startTime = DateTime.Now - elapsedDuration;
+                    }
                 }
                 catch (Exception err)
                 {
