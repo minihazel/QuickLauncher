@@ -858,20 +858,20 @@ namespace QuickLauncher
                             {
                                 int days = (int)playtime.TotalDays;
                                 int hours = playtime.Hours;
-                                formattedPlaytime = $"{days}, {hours} hours";
+                                formattedPlaytime = $"{days} days, {hours} hours";
                             }
                             else if (playtime.TotalHours >= 1)
                             {
                                 int days = (int)playtime.TotalDays;
                                 int hours = playtime.Hours;
                                 int minutes = playtime.Minutes;
-                                formattedPlaytime = $"{days}, {hours} hours, {minutes} minutes";
+                                formattedPlaytime = $"{days} days, {hours} hours, {minutes} minutes";
                             }
                             else
                             {
                                 int days = (int)playtime.TotalDays;
                                 int minutes = playtime.Minutes;
-                                formattedPlaytime = $"{days}, {minutes} hours";
+                                formattedPlaytime = $"{days} days, {minutes} hours";
                             }
                         }
                         else if (playtime.TotalHours >= 1)
@@ -896,7 +896,7 @@ namespace QuickLauncher
 
                         string quickLauncherFolder = Path.GetFileName(currentDir);
 
-                        MessageBox.Show($"You have a total playtime of {formattedPlaytime} in {quickLauncherFolder}", this.Text, MessageBoxButtons.OK);
+                        MessageBox.Show($"You have a total playtime of {formattedPlaytime} in {quickLauncherFolder}\n\nHour count: {playtime.TotalHours} hours", this.Text, MessageBoxButtons.OK);
                     }
                     else
                     {
