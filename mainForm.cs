@@ -894,9 +894,9 @@ namespace QuickLauncher
                             formattedPlaytime = $"{minutes} minutes";
                         }
 
+                        string formattedHour = string.Format("{0:#,##0} hours", playtime.TotalHours);
                         string quickLauncherFolder = Path.GetFileName(currentDir);
-
-                        MessageBox.Show($"You have a total playtime of {formattedPlaytime} in {quickLauncherFolder}\n\nHour count: {playtime.TotalHours} hours", this.Text, MessageBoxButtons.OK);
+                        MessageBox.Show($"You have a total playtime of {formattedPlaytime} in {quickLauncherFolder}\n\nHour count: {formattedHour}", this.Text, MessageBoxButtons.OK);
                     }
                     else
                     {
