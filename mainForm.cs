@@ -858,20 +858,20 @@ namespace QuickLauncher
                             {
                                 int days = (int)playtime.TotalDays;
                                 int hours = playtime.Hours;
-                                formattedPlaytime = $"{days} days, {hours} hours";
+                                formattedPlaytime = $"{days} days and {hours} hours";
                             }
                             else if (playtime.TotalHours >= 1)
                             {
                                 int days = (int)playtime.TotalDays;
                                 int hours = playtime.Hours;
                                 int minutes = playtime.Minutes;
-                                formattedPlaytime = $"{days} days, {hours} hours, {minutes} minutes";
+                                formattedPlaytime = $"{days} days, {hours} hours and {minutes} minutes";
                             }
                             else
                             {
                                 int days = (int)playtime.TotalDays;
                                 int minutes = playtime.Minutes;
-                                formattedPlaytime = $"{days} days, {minutes} hours";
+                                formattedPlaytime = $"{days} days and {minutes} hours";
                             }
                         }
                         else if (playtime.TotalHours >= 1)
@@ -885,7 +885,7 @@ namespace QuickLauncher
                             {
                                 int hours = playtime.Hours;
                                 int minutes = playtime.Minutes;
-                                formattedPlaytime = $"{hours} hours, {minutes} minutes";
+                                formattedPlaytime = $"{hours} hours and {minutes} minutes";
                             }
                         }
                         else
