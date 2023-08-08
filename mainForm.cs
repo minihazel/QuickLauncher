@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -24,6 +26,7 @@ namespace QuickLauncher
         public Color listHovercolor = Color.FromArgb(255, 35, 35, 35);
 
         public string currentDir = Environment.CurrentDirectory; /* $"E:\\SPT Iterations\\SPT-AKI 3.5.8"; */
+        public string playtimeFile;
 
         public string currentAID;
         public string ipAddress;
@@ -39,6 +42,7 @@ namespace QuickLauncher
         public BackgroundWorker TarkovProcessDetector;
         public BackgroundWorker TarkovEndDetector;
         public StringBuilder akiServerOutputter;
+        DateTime startTime;
 
         protected override void WndProc(ref Message m)
         {
@@ -91,6 +95,10 @@ namespace QuickLauncher
                     string profilesFolder = Path.Combine(userFolder, "profiles");
                     if (Directory.Exists(profilesFolder))
                     {
+                        playtimeFile = Path.Combine(currentDir, "playtime.txt");
+                        if (!File.Exists(playtimeFile))
+                            File.Create(playtimeFile).Close();
+
                         listProfiles(profilesFolder);
                     }
                     else
@@ -495,12 +503,16 @@ namespace QuickLauncher
                 {
                     killProcesses(true);
 
+                    DateTime endTime = DateTime.Now;
+                    TimeSpan playtime = endTime - startTime;
+                    int playtimeInSeconds = (int)playtime.TotalSeconds;
+                    File.WriteAllText(playtimeFile, playtimeInSeconds.ToString());
+
                     if (TarkovEndDetector != null)
                         TarkovEndDetector.Dispose();
 
                     break;
                 }
-
                 System.Threading.Thread.Sleep(1000);
             }
         }
@@ -798,6 +810,8 @@ namespace QuickLauncher
                     TarkovEndDetector.DoWork += TarkovEndDetector_DoWork;
                     TarkovEndDetector.RunWorkerCompleted += TarkovEndDetector_RunWorkerCompleted;
                     TarkovEndDetector.RunWorkerAsync();
+
+                    startTime = DateTime.Now;
                 }
                 catch (Exception err)
                 {
@@ -818,6 +832,78 @@ namespace QuickLauncher
         private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             killProcesses(true);
+        }
+
+        private void btnViewPlaytime_Click(object sender, EventArgs e)
+        {
+            bool playtimeExists = File.Exists(playtimeFile);
+            if (playtimeExists)
+            {
+                FileInfo info = new FileInfo(playtimeFile);
+                if (info.Length == 0)
+                {
+                    MessageBox.Show("No playtime has been recorded. Please start Escape From Tarkov with a profile and play for a bit, then try again.", this.Text, MessageBoxButtons.OK);
+                }
+                else
+                {
+                    string playtimeString = File.ReadAllText(playtimeFile);
+                    if (int.TryParse(playtimeString, out int playtimeInt))
+                    {
+                        TimeSpan playtime = TimeSpan.FromSeconds(playtimeInt);
+                        string formattedPlaytime = "";
+
+                        if (playtime.TotalDays >= 1)
+                        {
+                            if (playtime.TotalHours >= 1 && playtime.Minutes == 0)
+                            {
+                                int days = (int)playtime.TotalDays;
+                                int hours = playtime.Hours;
+                                formattedPlaytime = $"{days}, {hours} hours";
+                            }
+                            else if (playtime.TotalHours >= 1)
+                            {
+                                int days = (int)playtime.TotalDays;
+                                int hours = playtime.Hours;
+                                int minutes = playtime.Minutes;
+                                formattedPlaytime = $"{days}, {hours} hours, {minutes} minutes";
+                            }
+                            else
+                            {
+                                int days = (int)playtime.TotalDays;
+                                int minutes = playtime.Minutes;
+                                formattedPlaytime = $"{days}, {minutes} hours";
+                            }
+                        }
+                        else if (playtime.TotalHours >= 1)
+                        {
+                            if (playtime.Minutes == 0)
+                            {
+                                int hours = playtime.Hours;
+                                formattedPlaytime = $"{hours} hours";
+                            }
+                            else
+                            {
+                                int hours = playtime.Hours;
+                                int minutes = playtime.Minutes;
+                                formattedPlaytime = $"{hours} hours, {minutes} minutes";
+                            }
+                        }
+                        else
+                        {
+                            int minutes = playtime.Minutes;
+                            formattedPlaytime = $"{minutes} minutes";
+                        }
+
+                        string quickLauncherFolder = Path.GetFileName(currentDir);
+
+                        MessageBox.Show($"You have a total playtime of {formattedPlaytime} in {quickLauncherFolder}", this.Text, MessageBoxButtons.OK);
+                    }
+                    else
+                    {
+                        File.Create(playtimeFile).Close();
+                    }
+                }
+            }
         }
     }
 }

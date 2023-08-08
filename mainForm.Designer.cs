@@ -34,6 +34,7 @@
             this.lblLimit3 = new System.Windows.Forms.Label();
             this.btnReload = new System.Windows.Forms.Button();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.btnViewPlaytime = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutLimit)).BeginInit();
             this.panelBottom.SuspendLayout();
             this.SuspendLayout();
@@ -104,6 +105,7 @@
             // 
             this.panelBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelBottom.Controls.Add(this.btnViewPlaytime);
             this.panelBottom.Controls.Add(this.btnReload);
             this.panelBottom.Controls.Add(this.lblLimit1);
             this.panelBottom.Controls.Add(this.lblLimit3);
@@ -112,6 +114,24 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(308, 33);
             this.panelBottom.TabIndex = 4;
+            // 
+            // btnViewPlaytime
+            // 
+            this.btnViewPlaytime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnViewPlaytime.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnViewPlaytime.BackgroundImage")));
+            this.btnViewPlaytime.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnViewPlaytime.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnViewPlaytime.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnViewPlaytime.FlatAppearance.BorderSize = 0;
+            this.btnViewPlaytime.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnViewPlaytime.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnViewPlaytime.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnViewPlaytime.Location = new System.Drawing.Point(250, 4);
+            this.btnViewPlaytime.Name = "btnViewPlaytime";
+            this.btnViewPlaytime.Size = new System.Drawing.Size(28, 28);
+            this.btnViewPlaytime.TabIndex = 5;
+            this.btnViewPlaytime.UseVisualStyleBackColor = true;
+            this.btnViewPlaytime.Click += new System.EventHandler(this.btnViewPlaytime_Click);
             // 
             // mainForm
             // 
@@ -145,6 +165,7 @@
         private System.Windows.Forms.Label lblLimit3;
         private System.Windows.Forms.Button btnReload;
         private System.Windows.Forms.Panel panelBottom;
+        private System.Windows.Forms.Button btnViewPlaytime;
     }
 }
 
