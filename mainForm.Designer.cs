@@ -35,6 +35,7 @@
             this.btnReload = new System.Windows.Forms.Button();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.btnViewPlaytime = new System.Windows.Forms.Button();
+            this.chkToggleServer = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutLimit)).BeginInit();
             this.panelBottom.SuspendLayout();
             this.SuspendLayout();
@@ -105,6 +106,7 @@
             // 
             this.panelBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelBottom.Controls.Add(this.chkToggleServer);
             this.panelBottom.Controls.Add(this.btnViewPlaytime);
             this.panelBottom.Controls.Add(this.btnReload);
             this.panelBottom.Controls.Add(this.lblLimit1);
@@ -132,6 +134,25 @@
             this.btnViewPlaytime.TabIndex = 5;
             this.btnViewPlaytime.UseVisualStyleBackColor = true;
             this.btnViewPlaytime.Click += new System.EventHandler(this.btnViewPlaytime_Click);
+            // 
+            // chkToggleServer
+            // 
+            this.chkToggleServer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkToggleServer.BackgroundImage = global::QuickLauncher.Properties.Resources.send_inactive;
+            this.chkToggleServer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.chkToggleServer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkToggleServer.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.chkToggleServer.FlatAppearance.BorderSize = 0;
+            this.chkToggleServer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.chkToggleServer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.chkToggleServer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkToggleServer.Location = new System.Drawing.Point(216, 4);
+            this.chkToggleServer.Name = "chkToggleServer";
+            this.chkToggleServer.Size = new System.Drawing.Size(28, 28);
+            this.chkToggleServer.TabIndex = 6;
+            this.chkToggleServer.Tag = "inactive";
+            this.chkToggleServer.UseVisualStyleBackColor = true;
+            this.chkToggleServer.Click += new System.EventHandler(this.chkToggleServer_Click);
             // 
             // mainForm
             // 
@@ -166,6 +187,7 @@
         private System.Windows.Forms.Button btnReload;
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Button btnViewPlaytime;
+        private System.Windows.Forms.Button chkToggleServer;
     }
 }
 

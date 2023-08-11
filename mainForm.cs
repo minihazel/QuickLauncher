@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuickLauncher.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,14 +25,16 @@ namespace QuickLauncher
         public Color listBackcolor = Color.FromArgb(255, 28, 28, 28);
         public Color listSelectedcolor = Color.FromArgb(255, 40, 40, 40);
         public Color listHovercolor = Color.FromArgb(255, 35, 35, 35);
+        public Color selectedOptionColor = Color.FromArgb(50, 50, 50);
 
-        public string currentDir = Environment.CurrentDirectory; /* $"E:\\SPT Iterations\\SPT-AKI 3.5.8"; */
+        public string currentDir = $"E:\\SPT Iterations\\SPT-AKI 3.6.1";
         public string playtimeFile;
 
         public string currentAID;
         public string ipAddress;
         public int akiPort;
         public StringBuilder serverOut;
+        public bool shouldServerOpen = false;
 
         public Process server = null;
         public Process launcher = null;
@@ -725,28 +728,52 @@ namespace QuickLauncher
 
                 server.StartInfo.WorkingDirectory = currentDir;
                 server.StartInfo.FileName = "Aki.Server.exe";
-                server.StartInfo.CreateNoWindow = true;
-                server.StartInfo.UseShellExecute = false;
-                server.StartInfo.RedirectStandardOutput = true;
-                server.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
-                server.OutputDataReceived += server_OutputDataReceived;
-                server.Exited += server_Exited;
-
-                try
+                switch (shouldServerOpen)
                 {
-                    serverOut = new StringBuilder();
-                    server.Start();
-                    server.BeginOutputReadLine();
+                    case true:
+                        server.StartInfo.CreateNoWindow = false;
 
-                    this.Hide();
-                    checkWorker();
+                        try
+                        {
+                            server.Start();
+
+                            this.Hide();
+                            checkWorker();
+                        }
+                        catch (Exception err)
+                        {
+                            Debug.WriteLine($"ERROR: {err}");
+                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
+                        }
+
+                        break;
+                    case false:
+                        server.StartInfo.CreateNoWindow = true;
+                        server.StartInfo.UseShellExecute = false;
+                        server.StartInfo.RedirectStandardOutput = true;
+                        server.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+                        server.OutputDataReceived += server_OutputDataReceived;
+                        server.Exited += server_Exited;
+
+                        try
+                        {
+                            serverOut = new StringBuilder();
+                            server.Start();
+                            server.BeginOutputReadLine();
+
+                            this.Hide();
+                            checkWorker();
+                        }
+                        catch (Exception err)
+                        {
+                            Debug.WriteLine($"ERROR: {err}");
+                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
+                        }
+
+                        break;
                 }
-                catch (Exception err)
-                {
-                    Debug.WriteLine($"ERROR: {err}");
-                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
-                }
+
                 Directory.SetCurrentDirectory(Environment.CurrentDirectory);
             }
         }
@@ -909,6 +936,22 @@ namespace QuickLauncher
                         File.Create(playtimeFile).Close();
                     }
                 }
+            }
+        }
+
+        private void chkToggleServer_Click(object sender, EventArgs e)
+        {
+            if (chkToggleServer.Tag.ToString().ToLower() == "inactive")
+            {
+                chkToggleServer.Tag = "active";
+                shouldServerOpen = true;
+                chkToggleServer.BackgroundImage = Resources.send;
+            }
+            else
+            {
+                chkToggleServer.Tag = "inactive";
+                shouldServerOpen = false;
+                chkToggleServer.BackgroundImage = Resources.send_inactive;
             }
         }
     }
