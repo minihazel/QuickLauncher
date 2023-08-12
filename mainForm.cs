@@ -45,6 +45,7 @@ namespace QuickLauncher
         public BackgroundWorker TarkovProcessDetector;
         public BackgroundWorker TarkovEndDetector;
         public StringBuilder akiServerOutputter;
+        public BackgroundWorker isServerOpen;
         DateTime startTime;
 
         protected override void WndProc(ref Message m)
@@ -541,6 +542,42 @@ namespace QuickLauncher
         {
         }
 
+        private void isServerOpen_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string processName = "Aki.Server";
+            while (true)
+            {
+                Process[] processes = Process.GetProcessesByName(processName);
+                if (processes.Length == 0)
+                {
+                    killProcesses(true);
+
+                    DateTime endTime = DateTime.Now;
+                    TimeSpan playtime = endTime - startTime;
+                    int playtimeInSeconds = (int)playtime.TotalSeconds;
+                    File.WriteAllText(playtimeFile, playtimeInSeconds.ToString());
+
+                    if (isServerOpen != null)
+                        isServerOpen.Dispose();
+
+                    if (TarkovEndDetector != null)
+                        TarkovEndDetector.Dispose();
+
+                    break;
+                }
+                System.Threading.Thread.Sleep(1000);
+            }
+        }
+
+        private void isServerOpen_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (isServerOpen != null)
+                isServerOpen.Dispose();
+
+            if (TarkovEndDetector != null)
+                TarkovEndDetector.Dispose();
+        }
+
         // BACKGROUND PROCESSES
 
 
@@ -773,6 +810,11 @@ namespace QuickLauncher
 
                         break;
                 }
+
+                isServerOpen = new BackgroundWorker();
+                isServerOpen.DoWork += isServerOpen_DoWork;
+                isServerOpen.RunWorkerCompleted += isServerOpen_RunWorkerCompleted;
+                isServerOpen.RunWorkerAsync();
 
                 Directory.SetCurrentDirectory(Environment.CurrentDirectory);
             }
