@@ -222,30 +222,35 @@ namespace QuickLauncher
         }
 
         // When a profile is clicked
-        private void lbl_MouseDown(object sender, EventArgs e)
+        private void lbl_MouseDown(object sender, MouseEventArgs e)
         {
             System.Windows.Forms.Label label = (System.Windows.Forms.Label)sender;
 
             if (label.Text != "")
             {
-                if (label.BackColor == listHovercolor)
+                if (e.Button == MouseButtons.Left)
                 {
-                    // label.BackColor = listSelectedcolor;
-
-                    if (label.Text.ToLower() == ">> invalid profile hierarchy")
+                    if (label.BackColor == listHovercolor)
                     {
-                        MessageBox.Show("This profile seems to have an improper profile structure. Cancelling load.\n\n\n" +
-                                        "The structure should be `<profileAID>.json` -> `characters` -> `pmc` -> `Info`", this.Text, MessageBoxButtons.OK);
+                        if (label.Text.ToLower() == ">> invalid profile hierarchy")
+                        {
+                            MessageBox.Show("This profile seems to have an improper profile structure. Cancelling load.\n\n\n" +
+                                            "The structure should be `<profileAID>.json` -> `characters` -> `pmc` -> `Info`", this.Text, MessageBoxButtons.OK);
+                        }
+                        else
+                        {
+                            currentAID = label.Text;
+                            runServer();
+                        }
                     }
                     else
                     {
-                        currentAID = label.Text;
-                        runServer();
+                        label.BackColor = listHovercolor;
                     }
                 }
-                else
+                else if (e.Button == MouseButtons.Right)
                 {
-                    label.BackColor = listHovercolor;
+                    // to be continued
                 }
             }
         }
@@ -280,7 +285,6 @@ namespace QuickLauncher
                     {
                         if (PMC.ContainsKey("Info") && PMC["Info"] is Dictionary<string, object> Info)
                         {
-
                             string Nickname = Info["Nickname"]?.ToString();
                             int Level = Convert.ToInt32(Info["Level"]);
                             string Side = Info["Side"]?.ToString();
