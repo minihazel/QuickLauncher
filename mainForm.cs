@@ -27,7 +27,7 @@ namespace QuickLauncher
         public Color listHovercolor = Color.FromArgb(255, 35, 35, 35);
         public Color selectedOptionColor = Color.FromArgb(50, 50, 50);
 
-        public string currentDir = $"E:\\SPT Iterations\\SPT-AKI 3.6.1";
+        public string currentDir = Environment.CurrentDirectory;
         public string playtimeFile;
 
         public string currentAID;
