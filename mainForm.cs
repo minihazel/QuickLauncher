@@ -920,6 +920,11 @@ namespace QuickLauncher
 
         private void btnViewPlaytime_Click(object sender, EventArgs e)
         {
+            MessageBox.Show($"This feature has been temporarily disabled, will be fixed at a later date." +
+                $"{Environment.NewLine}" +
+                $"{Environment.NewLine}" +
+                $"We apologize for the inconvenience.", this.Text, MessageBoxButtons.OK);
+
             /*
             bool playtimeExists = File.Exists(playtimeFile);
             if (playtimeExists)
