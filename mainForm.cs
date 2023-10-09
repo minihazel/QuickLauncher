@@ -27,7 +27,8 @@ namespace QuickLauncher
         public Color listHovercolor = Color.FromArgb(255, 35, 35, 35);
         public Color selectedOptionColor = Color.FromArgb(50, 50, 50);
 
-        public string currentDir = Environment.CurrentDirectory;
+        //public string currentDir = Environment.CurrentDirectory;
+        public string currentDir = $"C:\\SPT-AKI 3.7.0";
         public string playtimeFile;
 
         public string currentAID;
@@ -511,10 +512,12 @@ namespace QuickLauncher
                 {
                     killProcesses(true);
 
+                    /*
                     DateTime endTime = DateTime.Now;
                     TimeSpan playtime = endTime - startTime;
                     int playtimeInSeconds = (int)playtime.TotalSeconds;
                     File.WriteAllText(playtimeFile, playtimeInSeconds.ToString());
+                    */
 
                     if (TarkovEndDetector != null)
                         TarkovEndDetector.Dispose();
@@ -556,10 +559,12 @@ namespace QuickLauncher
                 {
                     killProcesses(true);
 
+                    /*
                     DateTime endTime = DateTime.Now;
                     TimeSpan playtime = endTime - startTime;
                     int playtimeInSeconds = (int)playtime.TotalSeconds;
                     File.WriteAllText(playtimeFile, playtimeInSeconds.ToString());
+                    */
 
                     if (isServerOpen != null)
                         isServerOpen.Dispose();
@@ -884,6 +889,7 @@ namespace QuickLauncher
                     TarkovEndDetector.RunWorkerCompleted += TarkovEndDetector_RunWorkerCompleted;
                     TarkovEndDetector.RunWorkerAsync();
 
+                    /*
                     bool playtimeExists = File.Exists(playtimeFile);
                     if (playtimeExists)
                     {
@@ -891,6 +897,7 @@ namespace QuickLauncher
                         TimeSpan elapsedDuration = TimeSpan.FromSeconds(previousSeconds);
                         startTime = DateTime.Now - elapsedDuration;
                     }
+                    */
                 }
                 catch (Exception err)
                 {
@@ -915,6 +922,7 @@ namespace QuickLauncher
 
         private void btnViewPlaytime_Click(object sender, EventArgs e)
         {
+            /*
             bool playtimeExists = File.Exists(playtimeFile);
             if (playtimeExists)
             {
@@ -983,6 +991,7 @@ namespace QuickLauncher
                     }
                 }
             }
+            */
         }
 
         private void chkToggleServer_Click(object sender, EventArgs e)
