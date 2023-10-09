@@ -32,7 +32,7 @@ namespace QuickLauncher
         public string playtimeFile;
 
         public string currentAID;
-        public string ipAddress;
+        public string ipAddress = "";
         public int akiPort;
         public StringBuilder serverOut;
         public bool shouldServerOpen = false;
@@ -176,13 +176,12 @@ namespace QuickLauncher
                 var json = serializer.DeserializeObject(read);
                 Dictionary<string, object> profile = (Dictionary<string, object>)json;
 
-                string ip = profile["ip"].ToString();
-
-                ipAddress = ip;
+                ipAddress = (string)profile["ip"];
                 akiPort = Convert.ToInt32(profile["port"]);
             }
             else
             {
+                ipAddress = "127.0.0.1";
                 akiPort = 6969;
             }
 
