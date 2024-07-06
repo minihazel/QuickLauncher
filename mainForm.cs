@@ -305,6 +305,9 @@ namespace QuickLauncher
                                     case "edge_of_darkness":
                                         GameVersion = "EOD";
                                         break;
+                                    case "unheard_edition":
+                                        GameVersion = "Unheard";
+                                        break;
                                 }
                                 result = $"{Nickname}  [{Side.ToUpper()}] [Lvl {Level.ToString()}] [{GameVersion.ToString()}]";
                             }
