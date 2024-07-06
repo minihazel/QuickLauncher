@@ -108,19 +108,19 @@ namespace QuickLauncher
                     else
                     {
                         exitApp("Couldn\'t detect the `profiles` folder.\n" +
-                            "Please place this app in your SPT-AKI folder (where Aki.Server.exe is located)");
+                            "Please place this app in your SPT folder (where SPT.Server.exe is located)");
                     }
                 }
                 else
                 {
                     exitApp("Couldn\'t detect the `user` folder.\n" +
-                        "Please place this app in your SPT-AKI folder (where Aki.Server.exe is located)");
+                        "Please place this app in your SPT folder (where SPT.Server.exe is located)");
                 }
             }
             else
             {
                 exitApp("Couldn\'t detect the main folder folder.\n" +
-                    "Please place this app in your SPT-AKI folder (where Aki.Server.exe is located)");
+                    "Please place this app in your SPT folder (where SPT.Server.exe is located)");
             }
         }
 
@@ -162,7 +162,7 @@ namespace QuickLauncher
                 this.Controls.Add(lbl);
             }
 
-            string portFile = Path.Combine(currentDir, "Aki_Data");
+            string portFile = Path.Combine(currentDir, "SPT_Data");
             portFile = Path.Combine(portFile, "Server");
             portFile = Path.Combine(portFile, "database");
             portFile = Path.Combine(portFile, "server.json");
@@ -393,7 +393,7 @@ namespace QuickLauncher
 
         private bool isServerOn()
         {
-            Process[] servers = Process.GetProcessesByName("Aki.Server");
+            Process[] servers = Process.GetProcessesByName("SPT.Server");
             return servers.Length > 0;
         }
 
@@ -475,9 +475,9 @@ namespace QuickLauncher
                     if (CheckServerWorker != null)
                         CheckServerWorker.Dispose();
 
-                    MessageBox.Show("We could not detect the Aki Launcher after 5 minutes.\n" +
+                    MessageBox.Show("We could not detect the SPT Launcher after 5 minutes.\n" +
                               "\n" +
-                              "Max duration reached, launching SPT-AKI.");
+                              "Max duration reached, launching SPT.");
 
                     runTarkov();
                     return;
@@ -549,7 +549,7 @@ namespace QuickLauncher
 
         private void isServerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
-            string processName = "Aki.Server";
+            string processName = "SPT.Server";
             while (true)
             {
                 Process[] processes = Process.GetProcessesByName(processName);
@@ -597,8 +597,8 @@ namespace QuickLauncher
             if (serverOut != null)
                 serverOut.Clear();
 
-            string akiServerProcess = "Aki.Server";
-            string akiLauncherProcess = "Aki.Launcher";
+            string akiServerProcess = "SPT.Server";
+            string akiLauncherProcess = "SPT.Launcher";
             string eftProcess = "EscapeFromTarkov";
             bool akiServerTerminated = false;
             bool akiLauncherTerminated = false;
@@ -628,7 +628,7 @@ namespace QuickLauncher
             }
             catch (Exception err)
             {
-                Debug.WriteLine($"TERMINATION FAILURE OF AKI SERVER (IGNORE): {err.ToString()}");
+                Debug.WriteLine($"TERMINATION FAILURE OF SPT SERVER (IGNORE): {err.ToString()}");
             }
 
             Task.Delay(200);
@@ -657,7 +657,7 @@ namespace QuickLauncher
             }
             catch (Exception err)
             {
-                Debug.WriteLine($"TERMINATION FAILURE OF AKI LAUNCHER (IGNORE): {err.ToString()}");
+                Debug.WriteLine($"TERMINATION FAILURE OF SPT LAUNCHER (IGNORE): {err.ToString()}");
             }
 
             Task.Delay(200);
@@ -686,7 +686,7 @@ namespace QuickLauncher
             }
             catch (Exception err)
             {
-                Debug.WriteLine($"TERMINATION FAILURE OF AKI LAUNCHER (IGNORE): {err.ToString()}");
+                Debug.WriteLine($"TERMINATION FAILURE OF SPT LAUNCHER (IGNORE): {err.ToString()}");
             }
 
             Task.Delay(500);
@@ -744,7 +744,7 @@ namespace QuickLauncher
                 }
                 else
                 {
-                    MessageBox.Show("Failed to end one or more processs (Aki.Server, Aki.Launcher, Escape From Tarkov), cancelling exit.", this.Text, MessageBoxButtons.OK);
+                    MessageBox.Show("Failed to end one or more processs (SPT.Server, SPT.Launcher, Escape From Tarkov), cancelling exit.", this.Text, MessageBoxButtons.OK);
                 }
             }
             catch (Exception err)
@@ -771,7 +771,7 @@ namespace QuickLauncher
                 Process server = new Process();
 
                 server.StartInfo.WorkingDirectory = currentDir;
-                server.StartInfo.FileName = "Aki.Server.exe";
+                server.StartInfo.FileName = "SPT.Server.exe";
 
                 switch (shouldServerOpen)
                 {
@@ -856,7 +856,7 @@ namespace QuickLauncher
             }
             catch (Exception err)
             {
-                Debug.WriteLine($"TERMINATION FAILURE LEFTOVERS AKI LAUNCHER (IGNORE): {err.ToString()}");
+                Debug.WriteLine($"TERMINATION FAILURE LEFTOVERS SPT LAUNCHER (IGNORE): {err.ToString()}");
             }
 
             Task.Delay(5000);
