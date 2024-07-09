@@ -93,6 +93,19 @@ namespace QuickLauncher
             {
                 lblLimit1.Select();
 
+                if (Properties.Settings.Default.serverToggle)
+                {
+                    chkToggleServer.Tag = "active";
+                    shouldServerOpen = true;
+                    chkToggleServer.BackgroundImage = Resources.send;
+                }
+                else
+                {
+                    chkToggleServer.Tag = "inactive";
+                    shouldServerOpen = false;
+                    chkToggleServer.BackgroundImage = Resources.send_inactive;
+                }
+
                 string userFolder = Path.Combine(currentDir, "user");
                 if (Directory.Exists(userFolder))
                 {
@@ -973,13 +986,19 @@ namespace QuickLauncher
                 chkToggleServer.Tag = "active";
                 shouldServerOpen = true;
                 chkToggleServer.BackgroundImage = Resources.send;
+
+                Properties.Settings.Default.serverToggle = true;
             }
             else
             {
                 chkToggleServer.Tag = "inactive";
                 shouldServerOpen = false;
                 chkToggleServer.BackgroundImage = Resources.send_inactive;
+
+                Properties.Settings.Default.serverToggle = false;
             }
+
+            Properties.Settings.Default.Save();
         }
     }
 }
