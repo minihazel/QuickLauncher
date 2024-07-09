@@ -16,5 +16,10 @@ namespace QuickLauncher
         {
             InitializeComponent();
         }
+
+        private void richTextBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
     }
 }
