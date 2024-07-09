@@ -891,6 +891,9 @@ namespace QuickLauncher
 
         private void btnViewPlaytime_Click(object sender, EventArgs e)
         {
+            FAQ faq_w = new FAQ();
+            faq_w.ShowDialog();
+
             /*
             bool playtimeExists = File.Exists(playtimeFile);
             if (playtimeExists)
