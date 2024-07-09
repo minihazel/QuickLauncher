@@ -98,18 +98,10 @@ namespace QuickLauncher
                 {
                     string profilesFolder = Path.Combine(userFolder, "profiles");
                     if (Directory.Exists(profilesFolder))
-                    {
-                        playtimeFile = Path.Combine(currentDir, "playtime.txt");
-                        if (!File.Exists(playtimeFile))
-                            File.Create(playtimeFile).Close();
-
                         listProfiles(profilesFolder);
-                    }
                     else
-                    {
                         exitApp("Couldn\'t detect the `profiles` folder.\n" +
                             "Please place this app in your SPT folder (where SPT.Server.exe is located)");
-                    }
                 }
                 else
                 {
@@ -513,13 +505,6 @@ namespace QuickLauncher
                 {
                     killProcesses(true);
 
-                    /*
-                    DateTime endTime = DateTime.Now;
-                    TimeSpan playtime = endTime - startTime;
-                    int playtimeInSeconds = (int)playtime.TotalSeconds;
-                    File.WriteAllText(playtimeFile, playtimeInSeconds.ToString());
-                    */
-
                     if (TarkovEndDetector != null)
                         TarkovEndDetector.Dispose();
 
@@ -559,13 +544,6 @@ namespace QuickLauncher
                 if (processes.Length == 0)
                 {
                     killProcesses(true);
-
-                    /*
-                    DateTime endTime = DateTime.Now;
-                    TimeSpan playtime = endTime - startTime;
-                    int playtimeInSeconds = (int)playtime.TotalSeconds;
-                    File.WriteAllText(playtimeFile, playtimeInSeconds.ToString());
-                    */
 
                     if (isServerOpen != null)
                         isServerOpen.Dispose();
@@ -889,16 +867,6 @@ namespace QuickLauncher
                     TarkovEndDetector.DoWork += TarkovEndDetector_DoWork;
                     TarkovEndDetector.RunWorkerCompleted += TarkovEndDetector_RunWorkerCompleted;
                     TarkovEndDetector.RunWorkerAsync();
-
-                    /*
-                    bool playtimeExists = File.Exists(playtimeFile);
-                    if (playtimeExists)
-                    {
-                        int previousSeconds = int.Parse(File.ReadAllText(playtimeFile));
-                        TimeSpan elapsedDuration = TimeSpan.FromSeconds(previousSeconds);
-                        startTime = DateTime.Now - elapsedDuration;
-                    }
-                    */
                 }
                 catch (Exception err)
                 {
@@ -923,11 +891,6 @@ namespace QuickLauncher
 
         private void btnViewPlaytime_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"This feature has been temporarily disabled, will be fixed at a later date." +
-                $"{Environment.NewLine}" +
-                $"{Environment.NewLine}" +
-                $"We apologize for the inconvenience.", this.Text, MessageBoxButtons.OK);
-
             /*
             bool playtimeExists = File.Exists(playtimeFile);
             if (playtimeExists)
