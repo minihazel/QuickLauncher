@@ -34,5 +34,29 @@ namespace QuickLauncher.Properties {
                 this["serverToggle"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool menuToggle {
+            get {
+                return ((bool)(this["menuToggle"]));
+            }
+            set {
+                this["menuToggle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string globalPath {
+            get {
+                return ((string)(this["globalPath"]));
+            }
+            set {
+                this["globalPath"] = value;
+            }
+        }
     }
 }

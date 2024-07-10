@@ -27,7 +27,7 @@ namespace QuickLauncher
         public Color listHovercolor = Color.FromArgb(255, 35, 35, 35);
         public Color selectedOptionColor = Color.FromArgb(50, 50, 50);
 
-        public string currentDir = Environment.CurrentDirectory;
+        public string currentDir = $"D:\\SPT Iterations\\SPT-AKI 3.9.0";
         public string playtimeFile;
 
         public string currentAID;
@@ -104,6 +104,17 @@ namespace QuickLauncher
                     chkToggleServer.Tag = "inactive";
                     shouldServerOpen = false;
                     chkToggleServer.BackgroundImage = Resources.send_inactive;
+                }
+
+                if (Properties.Settings.Default.menuToggle)
+                    panelBottom.Visible = true;
+                else
+                    panelBottom.Visible = false;
+
+                if (Properties.Settings.Default.globalPath != "")
+                {
+                    currentDir = Properties.Settings.Default.globalPath;
+                    btnShowPath.Text = currentDir;
                 }
 
                 string userFolder = Path.Combine(currentDir, "user");
@@ -999,6 +1010,78 @@ namespace QuickLauncher
             }
 
             Properties.Settings.Default.Save();
+        }
+
+        private void chkToggleMenu_Click(object sender, EventArgs e)
+        {
+            if (panelBottom.Visible)
+            {
+                Properties.Settings.Default.menuToggle = false;
+                panelBottom.Visible = false;
+            }
+            else
+            {
+                Properties.Settings.Default.menuToggle = true;
+                panelBottom.Visible = true;
+            }
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void btnClearPath_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.globalPath = null;
+            Properties.Settings.Default.Save();
+
+            currentDir = Environment.CurrentDirectory;
+            btnShowPath.Text = "No path set!";
+        }
+
+        private void btnShowPath_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog cf = new OpenFileDialog();
+            cf.Title = "Select SPT.Server or SPT.Launcher in the folder you want to set";
+            cf.InitialDirectory = currentDir;
+            cf.Filter = "Executable files (*.exe)|*.exe";
+            cf.FilterIndex = 1;
+            cf.RestoreDirectory = true;
+            cf.CheckFileExists = true;
+            cf.CheckPathExists = true;
+
+            if (cf.ShowDialog() == DialogResult.OK)
+            {
+                string selectedPath = cf.FileName;
+                string trimmedSelectedPath = Path.GetFileNameWithoutExtension(selectedPath);
+
+                if (trimmedSelectedPath.ToLower() == "spt.server" ||
+                    trimmedSelectedPath.ToLower() == "spt.launcher" ||
+                    trimmedSelectedPath.ToLower() == "escapefromtarkov")
+                {
+                    string selectedParent = Directory.GetParent(selectedPath).ToString();
+                    if (Directory.Exists(selectedParent))
+                    {
+                        btnShowPath.Text = selectedParent;
+
+                        Properties.Settings.Default.globalPath = selectedParent;
+                        Properties.Settings.Default.Save();
+
+                        
+                        if (MessageBox.Show("New global path set!" + Environment.NewLine + Environment.NewLine +
+                            "Would you like restart the app for the changes to take effect?", Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
+                            Application.Restart();
+                        } 
+                    }
+                }
+            }
+        }
+
+        private void chkTogglePath_Click(object sender, EventArgs e)
+        {
+            if (panelPath.Visible)
+                panelPath.Visible = false;
+            else
+                panelPath.Visible = true;
         }
     }
 }
