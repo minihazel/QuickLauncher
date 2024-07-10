@@ -213,8 +213,8 @@ namespace QuickLauncher
                     }
                     else
                     {
-                        exitApp("Couldn\'t detect the `user` folder.\n" +
-                            "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                        panelPath.Visible = true;
+                        MessageBox.Show("No SPT files were detected. Please browse to a folder that contains an SPT installation (3.9.0 or higher)", Text, MessageBoxButtons.OK);
                     }
                 }
                 catch (Exception ex)
@@ -253,8 +253,8 @@ namespace QuickLauncher
                     }
                     else
                     {
-                        exitApp("Couldn\'t detect the `user` folder.\n" +
-                            "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                        panelPath.Visible = true;
+                        MessageBox.Show("No SPT files were detected. Please browse to a folder that contains an SPT installation (3.9.0 or higher)", Text, MessageBoxButtons.OK);
                     }
                 }
                 catch (Exception ex)
@@ -266,7 +266,7 @@ namespace QuickLauncher
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-             if (Directory.Exists(currentDir))
+            if (Directory.Exists(currentDir))
             {
                 lblLimit1.Select();
 
@@ -306,13 +306,13 @@ namespace QuickLauncher
                 }
                 else
                 {
-                    exitApp("Couldn\'t detect the `user` folder.\n" +
-                        "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                    panelPath.Visible = true;
+                    MessageBox.Show("No SPT files were detected. Please browse to a folder that contains an SPT installation (3.9.0 or higher)", Text, MessageBoxButtons.OK);
                 }
             }
             else
             {
-                exitApp("Couldn\'t detect the main folder folder.\n" +
+                exitApp("Couldn\'t detect the main folder.\n" +
                     "Please place this app in your SPT folder (where SPT.Server.exe is located)");
             }
         }
@@ -1234,7 +1234,7 @@ namespace QuickLauncher
                     string selectedParent = Directory.GetParent(selectedPath).ToString();
                     if (Directory.Exists(selectedParent))
                     {
-                        string SPTData = Path.Combine(selectedPath, "SPT_Data");
+                        string SPTData = Path.Combine(selectedParent, "SPT_Data");
                         bool dataExists = Directory.Exists(SPTData);
                         if (dataExists)
                         {
