@@ -107,74 +107,129 @@ namespace QuickLauncher
                     string appdata_live_Clothing = Path.Combine(appdata_live, "Clothing");
                     string appdata_live_PlayerIcons = Path.Combine(appdata_live, "PlayerIcons");
 
-                    // SPT stuff
-                    foreach (string file in Directory.GetFiles(appdata_files_achievement, "*.*"))
+                    if (Directory.Exists(appdata_files))
                     {
-                        try
+                        // SPT stuff
+                        if (Directory.Exists(appdata_files_achievement))
                         {
-                            File.Delete(file);
+                            foreach (string file in Directory.GetFiles(appdata_files_achievement, "*.*"))
+                            {
+                                try
+                                {
+                                    File.Delete(file);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine($"Delete error: {ex.Message}");
+                                }
+                            }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Debug.WriteLine($"Delete error: {ex.Message}");
+                            Debug.WriteLine($"Directory not exist: {appdata_files_achievement}");
+                        }
+                        if (Directory.Exists(appdata_files_quest_icon))
+                        {
+                            foreach (string file in Directory.GetFiles(appdata_files_quest_icon, "*.*"))
+                            {
+                                try
+                                {
+                                    File.Delete(file);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine($"Delete error: {ex.Message}");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"Directory not exist: {appdata_files_quest_icon}");
+                        }
+                        if (Directory.Exists(appdata_files_trader))
+                        {
+                            if (Directory.Exists(appdata_files_trader_avatar))
+                            {
+                                foreach (string file in Directory.GetFiles(appdata_files_trader_avatar, "*.*"))
+                                {
+                                    try
+                                    {
+                                        File.Delete(file);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine($"Delete error: {ex.Message}");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"Directory not exist: {appdata_files_trader_avatar}");
+                            }
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"Directory not exist: {appdata_files_trader}");
                         }
                     }
-                    foreach (string file in Directory.GetFiles(appdata_files_quest_icon, "*.*"))
+                    else
                     {
-                        try
-                        {
-                            File.Delete(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Delete error: {ex.Message}");
-                        }
-                    }
-                    foreach (string file in Directory.GetFiles(appdata_files_trader_avatar, "*.*"))
-                    {
-                        try
-                        {
-                            File.Delete(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Delete error: {ex.Message}");
-                        }
+                        Debug.WriteLine($"Directory not exist: {appdata_files_trader}");
                     }
 
-                    // Live stuff
-                    foreach (string file in Directory.GetFiles(appdata_live, "*.*"))
+                    if (Directory.Exists(appdata_live))
                     {
-                        try
+                        foreach (string file in Directory.GetFiles(appdata_live, "*.*"))
                         {
-                            File.Delete(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Delete error: {ex.Message}");
+                            try
+                            {
+                                File.Delete(file);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Delete error: {ex.Message}");
+                            }
                         }
                     }
-                    foreach (string file in Directory.GetFiles(appdata_live_Clothing, "*.*"))
+                    else
                     {
-                        try
+                        Debug.WriteLine($"Directory not exist: {appdata_live}");
+                    }
+                    if (Directory.Exists(appdata_live_Clothing))
+                    {
+                        foreach (string file in Directory.GetFiles(appdata_live_Clothing, "*.*"))
                         {
-                            File.Delete(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Delete error: {ex.Message}");
+                            try
+                            {
+                                File.Delete(file);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Delete error: {ex.Message}");
+                            }
                         }
                     }
-                    foreach (string file in Directory.GetFiles(appdata_live_PlayerIcons, "*.*"))
+                    else
                     {
-                        try
+                        Debug.WriteLine($"Directory not exist: {appdata_live_Clothing}");
+                    }
+                    if (Directory.Exists(appdata_live_PlayerIcons))
+                    {
+                        foreach (string file in Directory.GetFiles(appdata_live_PlayerIcons, "*.*"))
                         {
-                            File.Delete(file);
+                            try
+                            {
+                                File.Delete(file);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Delete error: {ex.Message}");
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Delete error: {ex.Message}");
-                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Directory not exist: {appdata_live_PlayerIcons}");
                     }
                 }
             }
