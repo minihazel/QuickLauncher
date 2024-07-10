@@ -35,15 +35,15 @@
             this.lblLimit3 = new System.Windows.Forms.Label();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.tooltipMain = new System.Windows.Forms.ToolTip(this.components);
-            this.panelPath = new System.Windows.Forms.Panel();
-            this.btnShowPath = new System.Windows.Forms.Button();
             this.chkToggleMenu = new System.Windows.Forms.Button();
             this.btnClearTempFiles = new System.Windows.Forms.Button();
             this.chkToggleServer = new System.Windows.Forms.Button();
             this.btnViewFAQ = new System.Windows.Forms.Button();
             this.btnReload = new System.Windows.Forms.Button();
             this.chkTogglePath = new System.Windows.Forms.Button();
+            this.panelPath = new System.Windows.Forms.Panel();
             this.btnClearPath = new System.Windows.Forms.Button();
+            this.btnShowPath = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutLimit)).BeginInit();
             this.panelBottom.SuspendLayout();
             this.panelPath.SuspendLayout();
@@ -114,39 +114,6 @@
             this.tooltipMain.ReshowDelay = 100;
             this.tooltipMain.ToolTipTitle = "QuickLauncher";
             // 
-            // panelPath
-            // 
-            this.panelPath.AllowDrop = true;
-            this.panelPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelPath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
-            this.panelPath.Controls.Add(this.btnClearPath);
-            this.panelPath.Controls.Add(this.btnShowPath);
-            this.panelPath.Location = new System.Drawing.Point(9, 337);
-            this.panelPath.Name = "panelPath";
-            this.panelPath.Size = new System.Drawing.Size(308, 36);
-            this.panelPath.TabIndex = 9;
-            this.panelPath.Visible = false;
-            // 
-            // btnShowPath
-            // 
-            this.btnShowPath.AllowDrop = true;
-            this.btnShowPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnShowPath.AutoEllipsis = true;
-            this.btnShowPath.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnShowPath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.btnShowPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShowPath.Font = new System.Drawing.Font("Bahnschrift Light", 8F);
-            this.btnShowPath.Location = new System.Drawing.Point(3, 3);
-            this.btnShowPath.Name = "btnShowPath";
-            this.btnShowPath.Size = new System.Drawing.Size(266, 30);
-            this.btnShowPath.TabIndex = 0;
-            this.btnShowPath.Text = "No path set!";
-            this.btnShowPath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnShowPath.UseVisualStyleBackColor = true;
-            this.btnShowPath.Click += new System.EventHandler(this.btnShowPath_Click);
-            // 
             // chkToggleMenu
             // 
             this.chkToggleMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -184,6 +151,7 @@
             this.btnClearTempFiles.Tag = "inactive";
             this.tooltipMain.SetToolTip(this.btnClearTempFiles, "Clear the SPT temp files");
             this.btnClearTempFiles.UseVisualStyleBackColor = true;
+            this.btnClearTempFiles.Click += new System.EventHandler(this.btnClearTempFiles_Click);
             // 
             // chkToggleServer
             // 
@@ -263,11 +231,26 @@
             this.chkTogglePath.UseVisualStyleBackColor = true;
             this.chkTogglePath.Click += new System.EventHandler(this.chkTogglePath_Click);
             // 
+            // panelPath
+            // 
+            this.panelPath.AllowDrop = true;
+            this.panelPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelPath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
+            this.panelPath.Controls.Add(this.btnClearPath);
+            this.panelPath.Controls.Add(this.btnShowPath);
+            this.panelPath.Location = new System.Drawing.Point(9, 337);
+            this.panelPath.Name = "panelPath";
+            this.panelPath.Size = new System.Drawing.Size(308, 36);
+            this.panelPath.TabIndex = 9;
+            this.panelPath.Visible = false;
+            // 
             // btnClearPath
             // 
             this.btnClearPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClearPath.AutoEllipsis = true;
+            this.btnClearPath.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnClearPath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.btnClearPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClearPath.Font = new System.Drawing.Font("Bahnschrift", 12F);
@@ -279,6 +262,25 @@
             this.btnClearPath.Text = "X";
             this.btnClearPath.UseVisualStyleBackColor = true;
             this.btnClearPath.Click += new System.EventHandler(this.btnClearPath_Click);
+            // 
+            // btnShowPath
+            // 
+            this.btnShowPath.AllowDrop = true;
+            this.btnShowPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnShowPath.AutoEllipsis = true;
+            this.btnShowPath.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnShowPath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnShowPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnShowPath.Font = new System.Drawing.Font("Bahnschrift Light", 8F);
+            this.btnShowPath.Location = new System.Drawing.Point(3, 3);
+            this.btnShowPath.Name = "btnShowPath";
+            this.btnShowPath.Size = new System.Drawing.Size(266, 30);
+            this.btnShowPath.TabIndex = 0;
+            this.btnShowPath.Text = "No path set!";
+            this.btnShowPath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnShowPath.UseVisualStyleBackColor = true;
+            this.btnShowPath.Click += new System.EventHandler(this.btnShowPath_Click);
             // 
             // mainForm
             // 

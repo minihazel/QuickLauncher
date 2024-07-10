@@ -28,8 +28,6 @@ namespace QuickLauncher
         public Color selectedOptionColor = Color.FromArgb(50, 50, 50);
 
         public string currentDir = $"D:\\SPT Iterations\\SPT-AKI 3.9.0";
-        public string playtimeFile;
-
         public string currentAID;
         public string ipAddress = "";
         public int akiPort;
@@ -85,6 +83,185 @@ namespace QuickLauncher
         public mainForm()
         {
             InitializeComponent();
+        }
+
+        private void clearTempFiles()
+        {
+            string userFolder = Path.Combine(currentDir, "user");
+            bool userFolderExists = Directory.Exists(userFolder);
+            if (userFolderExists)
+            {
+                string sptAppData = Path.Combine(userFolder, "sptappdata");
+                bool sptAppDataExists = Directory.Exists(sptAppData);
+                if (sptAppDataExists)
+                {
+                    // Variables
+                    string appdata_files = Path.Combine(sptAppData, "files");
+                    string appdata_files_achievement = Path.Combine(appdata_files, "achievement");
+                    string appdata_files_quest = Path.Combine(appdata_files, "quest");
+                    string appdata_files_quest_icon = Path.Combine(appdata_files_quest, "icon");
+                    string appdata_files_trader = Path.Combine(appdata_files, "trader");
+                    string appdata_files_trader_avatar = Path.Combine(appdata_files, "avatar");
+
+                    string appdata_live = Path.Combine(sptAppData, "live");
+                    string appdata_live_Clothing = Path.Combine(appdata_live, "Clothing");
+                    string appdata_live_PlayerIcons = Path.Combine(appdata_live, "PlayerIcons");
+
+                    // SPT stuff
+                    foreach (string file in Directory.GetFiles(appdata_files_achievement, "*.*"))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Delete error: {ex.Message}");
+                        }
+                    }
+                    foreach (string file in Directory.GetFiles(appdata_files_quest_icon, "*.*"))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Delete error: {ex.Message}");
+                        }
+                    }
+                    foreach (string file in Directory.GetFiles(appdata_files_trader_avatar, "*.*"))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Delete error: {ex.Message}");
+                        }
+                    }
+
+                    // Live stuff
+                    foreach (string file in Directory.GetFiles(appdata_live, "*.*"))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Delete error: {ex.Message}");
+                        }
+                    }
+                    foreach (string file in Directory.GetFiles(appdata_live_Clothing, "*.*"))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Delete error: {ex.Message}");
+                        }
+                    }
+                    foreach (string file in Directory.GetFiles(appdata_live_PlayerIcons, "*.*"))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Delete error: {ex.Message}");
+                        }
+                    }
+                }
+            }
+        }
+
+        private void setCurrentDir(bool empty, string parent)
+        {
+            if (empty)
+            {
+                Properties.Settings.Default.globalPath = null;
+                Properties.Settings.Default.Save();
+
+                currentDir = Environment.CurrentDirectory;
+                btnShowPath.Text = "No path set!";
+
+                try
+                {
+                    this.Controls.OfType<Label>().ToList().ForEach(label => this.Controls.Remove(label));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Removal error: {ex.Message}");
+                }
+
+                try
+                {
+                    string userFolder = Path.Combine(currentDir, "user");
+                    if (Directory.Exists(userFolder))
+                    {
+                        string profilesFolder = Path.Combine(userFolder, "profiles");
+                        if (Directory.Exists(profilesFolder))
+                            listProfiles(profilesFolder);
+                        else
+                            exitApp("Couldn\'t detect the `profiles` folder.\n" +
+                                "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                    }
+                    else
+                    {
+                        exitApp("Couldn\'t detect the `user` folder.\n" +
+                            "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Regeneration error: {ex.Message}");
+                }
+            }
+            else
+            {
+                Properties.Settings.Default.globalPath = parent;
+                Properties.Settings.Default.Save();
+
+                btnShowPath.Text = parent;
+                currentDir = parent;
+
+                try
+                {
+                    this.Controls.OfType<Label>().ToList().ForEach(label => this.Controls.Remove(label));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Removal error: {ex.Message}");
+                }
+
+                try
+                {
+                    string userFolder = Path.Combine(currentDir, "user");
+                    if (Directory.Exists(userFolder))
+                    {
+                        string profilesFolder = Path.Combine(userFolder, "profiles");
+                        if (Directory.Exists(profilesFolder))
+                            listProfiles(profilesFolder);
+                        else
+                            exitApp("Couldn\'t detect the `profiles` folder.\n" +
+                                "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                    }
+                    else
+                    {
+                        exitApp("Couldn\'t detect the `user` folder.\n" +
+                            "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Regeneration error: {ex.Message}");
+                }
+            }
         }
 
         private void mainForm_Load(object sender, EventArgs e)
@@ -1030,20 +1207,17 @@ namespace QuickLauncher
 
         private void btnClearPath_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.globalPath = null;
-            Properties.Settings.Default.Save();
-
-            currentDir = Environment.CurrentDirectory;
-            btnShowPath.Text = "No path set!";
+            setCurrentDir(true, null);
         }
 
         private void btnShowPath_Click(object sender, EventArgs e)
         {
             OpenFileDialog cf = new OpenFileDialog();
-            cf.Title = "Select SPT.Server or SPT.Launcher in the folder you want to set";
+            cf.Title = "Select the SPT.Server / SPT.Launcher / EscapeFromTarkov file in the folder you want to set";
             cf.InitialDirectory = currentDir;
             cf.Filter = "Executable files (*.exe)|*.exe";
             cf.FilterIndex = 1;
+            cf.Multiselect = false;
             cf.RestoreDirectory = true;
             cf.CheckFileExists = true;
             cf.CheckPathExists = true;
@@ -1060,17 +1234,18 @@ namespace QuickLauncher
                     string selectedParent = Directory.GetParent(selectedPath).ToString();
                     if (Directory.Exists(selectedParent))
                     {
-                        btnShowPath.Text = selectedParent;
-
-                        Properties.Settings.Default.globalPath = selectedParent;
-                        Properties.Settings.Default.Save();
-
-                        
-                        if (MessageBox.Show("New global path set!" + Environment.NewLine + Environment.NewLine +
-                            "Would you like restart the app for the changes to take effect?", Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        string SPTData = Path.Combine(selectedPath, "SPT_Data");
+                        bool dataExists = Directory.Exists(SPTData);
+                        if (dataExists)
                         {
-                            Application.Restart();
-                        } 
+                            setCurrentDir(false, selectedParent);
+                        }
+                        else
+                        {
+                            MessageBox.Show($"QuickLauncher only supports SPT 3.9.0 and up due to compatibility reasons."
+                                + Environment.NewLine + Environment.NewLine +
+                                "Please select another SPT installation that is version 3.9.0 or higher.", Text, MessageBoxButtons.OK);
+                        }
                     }
                 }
             }
@@ -1082,6 +1257,14 @@ namespace QuickLauncher
                 panelPath.Visible = false;
             else
                 panelPath.Visible = true;
+        }
+
+        private void btnClearTempFiles_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Clear the temp files?", Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                clearTempFiles();
+            }
         }
     }
 }
