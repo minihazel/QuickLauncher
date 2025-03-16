@@ -27,7 +27,7 @@ namespace QuickLauncher
         public Color listHovercolor = Color.FromArgb(255, 35, 35, 35);
         public Color selectedOptionColor = Color.FromArgb(50, 50, 50);
 
-        public string currentDir = Environment.CurrentDirectory;
+        public string currentDir = "D:\\SPT Iterations\\SPT 3.11";
         public string currentAID;
         public string ipAddress = "";
         public int akiPort;
@@ -1110,13 +1110,14 @@ namespace QuickLauncher
             else
             {
                 tarkovInfo.FileName = Path.Combine(currentDir, "EscapeFromTarkov");
-                tarkovInfo.Arguments = $"-token={AID} -config={{\"BackendUrl\":\"http://{ipAddress}:{akiPort}\",\"Version\":\"live\"}}";
+                tarkovInfo.Arguments = $"-force-gfx-jobs native -token={AID} -config={{'BackendUrl':'https://{ipAddress}:{akiPort}','Version':'live','MatchingVersion':'live'}}";
 
                 Process gameProcess = new Process();
                 gameProcess.StartInfo = tarkovInfo;
 
                 try
                 {
+                    Debug.WriteLine(tarkovInfo.Arguments.ToString());
                     gameProcess.Start();
 
                     TarkovEndDetector = new BackgroundWorker();
