@@ -411,15 +411,13 @@ namespace QuickLauncher
             }
 
             string portFile = Path.Combine(currentDir, "SPT_Data");
-            portFile = Path.Combine(portFile, "Server");
-            portFile = Path.Combine(portFile, "database");
-            portFile = Path.Combine(portFile, "server.json");
+            portFile = Path.Combine(portFile, "Server", "database", "server.json");
             bool portExists = File.Exists(portFile);
 
             if (portExists)
             {
                 string read = File.ReadAllText(portFile);
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                var serializer = JsonUtil.initSerializer();
                 var json = serializer.DeserializeObject(read);
                 Dictionary<string, object> profile = (Dictionary<string, object>)json;
 
@@ -522,7 +520,7 @@ namespace QuickLauncher
             if (profileExists)
             {
                 string read = File.ReadAllText(path);
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                var serializer = JsonUtil.initSerializer();
                 var json = serializer.DeserializeObject(read);
 
                 Dictionary<string, object> profile = (Dictionary<string, object>)json;
@@ -600,7 +598,7 @@ namespace QuickLauncher
                     for (int i = 0; i < profiles.Length; i++)
                     {
                         string read = File.ReadAllText(profiles[i]);
-                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        var serializer = JsonUtil.initSerializer();
                         var json = serializer.DeserializeObject(read);
                         Dictionary<string, object> profile = (Dictionary<string, object>)json;
                         Dictionary<string, object> characters = (Dictionary<string, object>)profile["characters"];

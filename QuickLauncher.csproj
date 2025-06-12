@@ -82,6 +82,7 @@
     <Compile Include="FAQ.Designer.cs">
       <DependentUpon>FAQ.cs</DependentUpon>
     </Compile>
+    <Compile Include="JsonUtil.cs" />
     <Compile Include="mainForm.cs">
       <SubType>Form</SubType>
     </Compile>
