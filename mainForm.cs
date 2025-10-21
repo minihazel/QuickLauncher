@@ -2,21 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace QuickLauncher
 {
@@ -27,16 +23,25 @@ namespace QuickLauncher
         public Color listHovercolor = Color.FromArgb(255, 35, 35, 35);
         public Color selectedOptionColor = Color.FromArgb(50, 50, 50);
 
-        public string currentDir = Environment.CurrentDirectory;
+        // strings
+        public string currentDir = null;
         public string currentAID;
         public string ipAddress = "";
+        private List<string> globalProcesses;
+
+        // ints
         public int akiPort;
+
+        // stringbuilders
         public StringBuilder serverOut;
+
+        // bools
         public bool shouldServerOpen = false;
 
+        // misc
+        private Dictionary<Control, bool> originalControlStates = new Dictionary<Control, bool>();
         public Process server = null;
         public Process launcher = null;
-        private List<string> globalProcesses;
 
         // background working
         BackgroundWorker CheckServerWorker;
@@ -85,9 +90,66 @@ namespace QuickLauncher
             InitializeComponent();
         }
 
+        private void mainForm_Load(object sender, EventArgs e)
+        {
+            // D:\SPT Iterations\4.0.0
+            // currentDir = "D:\\SPT Iterations\\4.0.0";
+            currentDir = Environment.CurrentDirectory;
+
+            if (Directory.Exists(currentDir))
+            {
+                lblLimit1.Select();
+
+                if (Properties.Settings.Default.serverToggle)
+                {
+                    chkToggleServer.Tag = "active";
+                    shouldServerOpen = true;
+                    chkToggleServer.BackgroundImage = Resources.send;
+                }
+                else
+                {
+                    chkToggleServer.Tag = "inactive";
+                    shouldServerOpen = false;
+                    chkToggleServer.BackgroundImage = Resources.send_inactive;
+                }
+
+                if (Properties.Settings.Default.menuToggle)
+                    panelBottom.Visible = true;
+                else
+                    panelBottom.Visible = false;
+
+                if (Properties.Settings.Default.globalPath != "")
+                {
+                    currentDir = Properties.Settings.Default.globalPath;
+                    btnShowPath.Text = currentDir;
+                }
+
+                string userFolder = Path.Combine(currentDir, "SPT", "user");
+                if (Directory.Exists(userFolder))
+                {
+                    string profilesFolder = Path.Combine(userFolder, "profiles");
+                    if (Directory.Exists(profilesFolder))
+                        listProfiles(profilesFolder);
+                    else
+                        exitApp("Couldn\'t detect the `profiles` folder.\n" +
+                            "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                }
+                else
+                {
+                    panelPath.Visible = true;
+                    MessageBox.Show("No SPT files were detected. Please browse to a folder that contains an SPT installation (3.9.0 or higher)", Text, MessageBoxButtons.OK);
+                }
+            }
+            else
+            {
+                exitApp("Couldn\'t detect the main folder.\n" +
+                    "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+            }
+        }
+
         private void clearTempFiles()
         {
-            string userFolder = Path.Combine(currentDir, "user");
+            string userFolder = Path.Combine(currentDir, "SPT", "user");
             bool userFolderExists = Directory.Exists(userFolder);
             if (userFolderExists)
             {
@@ -256,7 +318,7 @@ namespace QuickLauncher
 
                 try
                 {
-                    string userFolder = Path.Combine(currentDir, "user");
+                    string userFolder = Path.Combine(currentDir, "SPT", "user");
                     if (Directory.Exists(userFolder))
                     {
                         string profilesFolder = Path.Combine(userFolder, "profiles");
@@ -296,7 +358,7 @@ namespace QuickLauncher
 
                 try
                 {
-                    string userFolder = Path.Combine(currentDir, "user");
+                    string userFolder = Path.Combine(currentDir, "SPT", "user");
                     if (Directory.Exists(userFolder))
                     {
                         string profilesFolder = Path.Combine(userFolder, "profiles");
@@ -316,59 +378,6 @@ namespace QuickLauncher
                 {
                     Debug.WriteLine($"Regeneration error: {ex.Message}");
                 }
-            }
-        }
-
-        private void mainForm_Load(object sender, EventArgs e)
-        {
-            if (Directory.Exists(currentDir))
-            {
-                lblLimit1.Select();
-
-                if (Properties.Settings.Default.serverToggle)
-                {
-                    chkToggleServer.Tag = "active";
-                    shouldServerOpen = true;
-                    chkToggleServer.BackgroundImage = Resources.send;
-                }
-                else
-                {
-                    chkToggleServer.Tag = "inactive";
-                    shouldServerOpen = false;
-                    chkToggleServer.BackgroundImage = Resources.send_inactive;
-                }
-
-                if (Properties.Settings.Default.menuToggle)
-                    panelBottom.Visible = true;
-                else
-                    panelBottom.Visible = false;
-
-                if (Properties.Settings.Default.globalPath != "")
-                {
-                    currentDir = Properties.Settings.Default.globalPath;
-                    btnShowPath.Text = currentDir;
-                }
-
-                string userFolder = Path.Combine(currentDir, "user");
-                if (Directory.Exists(userFolder))
-                {
-                    string profilesFolder = Path.Combine(userFolder, "profiles");
-                    if (Directory.Exists(profilesFolder))
-                        listProfiles(profilesFolder);
-                    else
-                        exitApp("Couldn\'t detect the `profiles` folder.\n" +
-                            "Please place this app in your SPT folder (where SPT.Server.exe is located)");
-                }
-                else
-                {
-                    panelPath.Visible = true;
-                    MessageBox.Show("No SPT files were detected. Please browse to a folder that contains an SPT installation (3.9.0 or higher)", Text, MessageBoxButtons.OK);
-                }
-            }
-            else
-            {
-                exitApp("Couldn\'t detect the main folder.\n" +
-                    "Please place this app in your SPT folder (where SPT.Server.exe is located)");
             }
         }
 
@@ -405,13 +414,13 @@ namespace QuickLauncher
                 lbl.Cursor = Cursors.Hand;
                 lbl.MouseEnter += new EventHandler(lbl_MouseEnter);
                 lbl.MouseLeave += new EventHandler(lbl_MouseLeave);
-                lbl.MouseDown += new MouseEventHandler(lbl_MouseDown);
+                lbl.MouseDown += new MouseEventHandler(profile_Clicked);
                 lbl.MouseUp += new MouseEventHandler(lbl_MouseUp);
                 this.Controls.Add(lbl);
             }
 
-            string portFile = Path.Combine(currentDir, "SPT_Data");
-            portFile = Path.Combine(portFile, "Server", "database", "server.json");
+            string portFile = Path.Combine(currentDir, "SPT", "SPT_Data");
+            portFile = Path.Combine(portFile, "database", "server.json");
             bool portExists = File.Exists(portFile);
 
             if (portExists)
@@ -467,7 +476,7 @@ namespace QuickLauncher
         }
 
         // When a profile is clicked
-        private void lbl_MouseDown(object sender, MouseEventArgs e)
+        private void profile_Clicked(object sender, MouseEventArgs e)
         {
             System.Windows.Forms.Label label = (System.Windows.Forms.Label)sender;
 
@@ -584,7 +593,7 @@ namespace QuickLauncher
         private string displayAID(string nickname)
         {
             string result = "";
-            string userFolder = Path.Combine(currentDir, "user");
+            string userFolder = Path.Combine(currentDir, "SPT", "user");
 
             bool userFolderExists = Directory.Exists(userFolder);
             if (userFolderExists)
@@ -618,23 +627,33 @@ namespace QuickLauncher
             return result ?? "N/A";
         }
 
-        private bool CheckPort(int port)
+        private bool isPortListening(int port)
         {
             try
             {
-                using (var client = new TcpClient())
+                IPGlobalProperties globalProps = IPGlobalProperties.GetIPGlobalProperties();
+                IPEndPoint[] tcpListeners = globalProps.GetActiveTcpListeners();
+
+                bool isListening = tcpListeners.Any(endpoint =>
+                    endpoint.Port == port &&
+                    (
+                        endpoint.Address.Equals(IPAddress.Loopback) ||
+                        endpoint.Address.ToString() == "127.0.0.1"
+                    )
+                );
+
+                if (isListening)
                 {
                     if (CheckServerWorker != null)
                         CheckServerWorker.Dispose();
 
-                    client.Connect("127.0.0.1", port);
-                    Debug.WriteLine("Success");
-
                     runTarkov();
                     return true;
                 }
+                else
+                    return false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -715,20 +734,15 @@ namespace QuickLauncher
             int delay = 1000; // the delay between port checks in milliseconds
             int elapsed = 0; // the time elapsed since starting to check the port
 
-            while (!CheckPort(akiPort))
+            while (!isPortListening(akiPort))
             {
                 if (elapsed >= timeout)
                 {
-                    // port was not opened within the timeout period, so cancel the operation
                     e.Cancel = true;
-                    if (CheckServerWorker != null)
-                        CheckServerWorker.Dispose();
-
-                    MessageBox.Show("We could not detect the SPT Launcher after 5 minutes.\n" +
-                              "\n" +
-                              "Max duration reached, launching SPT.");
-
-                    runTarkov();
+                    MessageBox.Show("We could not detect SPT's active port after the elapsed time. Please up your timeout limit or try again.\n" +
+                                "\n" +
+                                "Max duration reached, launching SPT.");
+                    this.Show();
                     return;
                 }
 
@@ -783,6 +797,7 @@ namespace QuickLauncher
             }
 
             serverOut.AppendLine(res);
+            Debug.WriteLine(serverOut);
         }
 
         private void server_Exited(object sender, EventArgs e)
@@ -992,20 +1007,20 @@ namespace QuickLauncher
         {
             bool isRunning = isServerOn();
             Task.Delay(500);
+            this.Hide();
 
             if (isRunning)
             {
-                this.Hide();
                 checkWorker();
             }
             else
             {
                 Task.Delay(500);
 
-                Directory.SetCurrentDirectory(currentDir);
+                Directory.SetCurrentDirectory(Path.Combine(currentDir, "SPT"));
                 Process server = new Process();
 
-                server.StartInfo.WorkingDirectory = currentDir;
+                server.StartInfo.WorkingDirectory = Path.Combine(currentDir, "SPT");
                 server.StartInfo.FileName = "SPT.Server.exe";
 
                 switch (shouldServerOpen)
@@ -1016,8 +1031,6 @@ namespace QuickLauncher
                         try
                         {
                             server.Start();
-
-                            this.Hide();
                             checkWorker();
                         }
                         catch (Exception err)
@@ -1028,10 +1041,14 @@ namespace QuickLauncher
 
                         break;
                     case false:
-                        server.StartInfo.CreateNoWindow = true;
-                        server.StartInfo.UseShellExecute = false;
-                        server.StartInfo.RedirectStandardOutput = true;
-                        server.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+                        server.StartInfo.CreateNoWindow = false;
+                        server.StartInfo.UseShellExecute = true;
+
+                        // server.StartInfo.RedirectStandardOutput = true;
+                        // server.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+                        // SetConsoleMode in the SPT server; TODO
+
+                        server.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                         server.OutputDataReceived += server_OutputDataReceived;
                         server.Exited += server_Exited;
 
@@ -1039,9 +1056,7 @@ namespace QuickLauncher
                         {
                             serverOut = new StringBuilder();
                             server.Start();
-                            server.BeginOutputReadLine();
-
-                            this.Hide();
+                            // server.BeginOutputReadLine();
                             checkWorker();
                         }
                         catch (Exception err)
@@ -1109,6 +1124,7 @@ namespace QuickLauncher
             {
                 tarkovInfo.FileName = Path.Combine(currentDir, "EscapeFromTarkov");
                 tarkovInfo.Arguments = $"-force-gfx-jobs native -token={AID} -config={{'BackendUrl':'https://{ipAddress}:{akiPort}','Version':'live','MatchingVersion':'live'}}";
+                Debug.WriteLine(AID);
 
                 Process gameProcess = new Process();
                 gameProcess.StartInfo = tarkovInfo;
