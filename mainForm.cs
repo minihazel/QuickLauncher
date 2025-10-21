@@ -94,8 +94,8 @@ namespace QuickLauncher
         private void mainForm_Load(object sender, EventArgs e)
         {
             // D:\SPT Iterations\4.0.0
-            currentDir = "D:\\SPT Iterations\\3.11 testing";
-            // currentDir = Environment.CurrentDirectory;
+            // currentDir = "D:\\SPT Iterations\\3.11 testing";
+            currentDir = Environment.CurrentDirectory;
 
             if (Directory.Exists(currentDir))
             {
@@ -170,6 +170,7 @@ namespace QuickLauncher
 
                         ipAddress = Properties.Settings.Default.fikaAddress;
                         currentAID = Properties.Settings.Default.fikaAID;
+                        akiPort = 6969;
                     }
                     else
                     {
