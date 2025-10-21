@@ -94,8 +94,8 @@ namespace QuickLauncher
         private void mainForm_Load(object sender, EventArgs e)
         {
             // D:\SPT Iterations\4.0.0
-            // currentDir = "D:\\SPT Iterations\\3.11 testing";
-            currentDir = Environment.CurrentDirectory;
+            currentDir = "D:\\SPT Iterations\\3.11 testing";
+            // currentDir = Environment.CurrentDirectory;
 
             if (Directory.Exists(currentDir))
             {
@@ -180,8 +180,15 @@ namespace QuickLauncher
                         if (Directory.Exists(profilesFolder))
                             listProfiles(profilesFolder);
                         else
-                            exitApp("Couldn\'t detect the `profiles` folder.\n" +
-                                "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                        {
+                            string content = "Couldn\'t detect the `profiles` folder." + Environment.NewLine +
+                                "Please place this app in your SPT folder (where SPT.Server.exe is located)";
+
+                            if (MessageBox.Show(content, this.Text, MessageBoxButtons.OK) == DialogResult.OK)
+                            {
+                                Application.Exit();
+                            }
+                        }
                     }
                 }
                 else
@@ -192,8 +199,13 @@ namespace QuickLauncher
             }
             else
             {
-                exitApp("Couldn\'t detect the main folder.\n" +
-                    "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                string content = "Couldn\'t detect the main folder." + Environment.NewLine +
+                    "Please place this app in your SPT folder (where SPT.Server.exe is located)";
+
+                if (MessageBox.Show(content, this.Text, MessageBoxButtons.OK) == DialogResult.OK)
+                {
+                    Application.Exit();
+                }
             }
         }
 
@@ -375,8 +387,14 @@ namespace QuickLauncher
                         if (Directory.Exists(profilesFolder))
                             listProfiles(profilesFolder);
                         else
-                            exitApp("Couldn\'t detect the `profiles` folder.\n" +
-                                "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                        {
+                            string content = "Couldn\'t detect the `profiles` folder." + Environment.NewLine +
+                                "Please place this app in your SPT folder (where SPT.Server.exe is located)";
+                            if (MessageBox.Show(content, this.Text, MessageBoxButtons.OK) == DialogResult.OK)
+                            {
+                                Application.Exit();
+                            }
+                        }
                     }
                     else
                     {
@@ -415,8 +433,14 @@ namespace QuickLauncher
                         if (Directory.Exists(profilesFolder))
                             listProfiles(profilesFolder);
                         else
-                            exitApp("Couldn\'t detect the `profiles` folder.\n" +
-                                "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                        {
+                            string content = "Couldn\'t detect the `profiles` folder." + Environment.NewLine +
+                                "Please place this app in your SPT folder (where SPT.Server.exe is located)";
+                            if (MessageBox.Show(content, this.Text, MessageBoxButtons.OK) == DialogResult.OK)
+                            {
+                                Application.Exit();
+                            }
+                        }
                     }
                     else
                     {
@@ -429,12 +453,6 @@ namespace QuickLauncher
                     Debug.WriteLine($"Regeneration error: {ex.Message}");
                 }
             }
-        }
-
-        private void exitApp(string message)
-        {
-            MessageBox.Show(message, this.Text, MessageBoxButtons.OK);
-            Application.Exit();
         }
 
 
@@ -1408,6 +1426,12 @@ namespace QuickLauncher
             {
                 clearTempFiles();
             }
+        }
+
+        private void chkOpenAddressPrompt_Click(object sender, EventArgs e)
+        {
+            AddressForm frm = new AddressForm();
+            frm.ShowDialog();
         }
     }
 }

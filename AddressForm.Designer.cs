@@ -30,14 +30,15 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddressForm));
             this.panelAddress = new System.Windows.Forms.Panel();
+            this.valueAddress = new System.Windows.Forms.TextBox();
             this.btnClearAddress = new System.Windows.Forms.Button();
             this.btnConfused = new System.Windows.Forms.Button();
-            this.valueAddress = new System.Windows.Forms.TextBox();
             this.btnApply = new System.Windows.Forms.Button();
             this.panelProfile = new System.Windows.Forms.Panel();
             this.valueProfile = new System.Windows.Forms.TextBox();
             this.btnClearProfile = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.lblSanitizedInput = new System.Windows.Forms.Label();
             this.panelAddress.SuspendLayout();
             this.panelProfile.SuspendLayout();
             this.SuspendLayout();
@@ -54,6 +55,17 @@
             this.panelAddress.Name = "panelAddress";
             this.panelAddress.Size = new System.Drawing.Size(644, 36);
             this.panelAddress.TabIndex = 10;
+            // 
+            // valueAddress
+            // 
+            this.valueAddress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.valueAddress.ForeColor = System.Drawing.Color.Silver;
+            this.valueAddress.Location = new System.Drawing.Point(3, 4);
+            this.valueAddress.Name = "valueAddress";
+            this.valueAddress.Size = new System.Drawing.Size(602, 27);
+            this.valueAddress.TabIndex = 2;
+            this.valueAddress.Text = "https://127.0.0.1:6969";
+            this.valueAddress.TextChanged += new System.EventHandler(this.valueAddress_TextChanged);
             // 
             // btnClearAddress
             // 
@@ -85,16 +97,6 @@
             this.btnConfused.Text = "❓ Confused?";
             this.btnConfused.UseVisualStyleBackColor = true;
             this.btnConfused.Click += new System.EventHandler(this.btnConfused_Click);
-            // 
-            // valueAddress
-            // 
-            this.valueAddress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.valueAddress.ForeColor = System.Drawing.Color.Silver;
-            this.valueAddress.Location = new System.Drawing.Point(3, 4);
-            this.valueAddress.Name = "valueAddress";
-            this.valueAddress.Size = new System.Drawing.Size(602, 27);
-            this.valueAddress.TabIndex = 2;
-            this.valueAddress.Text = "https://127.0.0.1:6969";
             // 
             // btnApply
             // 
@@ -131,7 +133,6 @@
             this.valueProfile.Name = "valueProfile";
             this.valueProfile.Size = new System.Drawing.Size(602, 27);
             this.valueProfile.TabIndex = 2;
-            this.valueProfile.Text = "191";
             // 
             // btnClearProfile
             // 
@@ -148,6 +149,7 @@
             this.btnClearProfile.TabIndex = 1;
             this.btnClearProfile.Text = "X";
             this.btnClearProfile.UseVisualStyleBackColor = true;
+            this.btnClearProfile.Click += new System.EventHandler(this.btnClearProfile_Click);
             // 
             // label1
             // 
@@ -161,12 +163,24 @@
             this.label1.Text = "Insert the AID from your profile and remove `.json`\r\nExample: 68eacb98ba8fa004842" +
     "fbc42.json";
             // 
+            // lblSanitizedInput
+            // 
+            this.lblSanitizedInput.AutoSize = true;
+            this.lblSanitizedInput.Font = new System.Drawing.Font("Bahnschrift Light", 9F);
+            this.lblSanitizedInput.ForeColor = System.Drawing.Color.Gray;
+            this.lblSanitizedInput.Location = new System.Drawing.Point(12, 46);
+            this.lblSanitizedInput.Name = "lblSanitizedInput";
+            this.lblSanitizedInput.Size = new System.Drawing.Size(89, 14);
+            this.lblSanitizedInput.TabIndex = 15;
+            this.lblSanitizedInput.Text = "Sanitized input:";
+            // 
             // AddressForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(668, 207);
+            this.Controls.Add(this.lblSanitizedInput);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panelProfile);
             this.Controls.Add(this.btnApply);
@@ -176,12 +190,13 @@
             this.ForeColor = System.Drawing.Color.LightGray;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AddressForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Address";
+            this.Load += new System.EventHandler(this.AddressForm_Load);
             this.panelAddress.ResumeLayout(false);
             this.panelAddress.PerformLayout();
             this.panelProfile.ResumeLayout(false);
@@ -202,5 +217,6 @@
         private System.Windows.Forms.TextBox valueProfile;
         private System.Windows.Forms.Button btnClearProfile;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblSanitizedInput;
     }
 }

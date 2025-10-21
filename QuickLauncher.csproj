@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="play.ico" />
+    <None Include="Resources\link.png" />
     <None Include="Resources\letter-p.png" />
     <None Include="Resources\menu-bar.png" />
     <None Include="Resources\Btn_clear.png" />
