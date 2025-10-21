@@ -35,15 +35,16 @@
             this.lblLimit3 = new System.Windows.Forms.Label();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.tooltipMain = new System.Windows.Forms.ToolTip(this.components);
+            this.panelPath = new System.Windows.Forms.Panel();
+            this.btnClearPath = new System.Windows.Forms.Button();
+            this.btnShowPath = new System.Windows.Forms.Button();
+            this.chkOpenAddressPrompt = new System.Windows.Forms.Button();
+            this.chkTogglePath = new System.Windows.Forms.Button();
             this.chkToggleMenu = new System.Windows.Forms.Button();
             this.btnClearTempFiles = new System.Windows.Forms.Button();
             this.chkToggleServer = new System.Windows.Forms.Button();
             this.btnViewFAQ = new System.Windows.Forms.Button();
             this.btnReload = new System.Windows.Forms.Button();
-            this.chkTogglePath = new System.Windows.Forms.Button();
-            this.panelPath = new System.Windows.Forms.Panel();
-            this.btnClearPath = new System.Windows.Forms.Button();
-            this.btnShowPath = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutLimit)).BeginInit();
             this.panelBottom.SuspendLayout();
             this.panelPath.SuspendLayout();
@@ -113,6 +114,97 @@
             this.tooltipMain.InitialDelay = 500;
             this.tooltipMain.ReshowDelay = 100;
             this.tooltipMain.ToolTipTitle = "QuickLauncher";
+            // 
+            // panelPath
+            // 
+            this.panelPath.AllowDrop = true;
+            this.panelPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelPath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
+            this.panelPath.Controls.Add(this.btnClearPath);
+            this.panelPath.Controls.Add(this.btnShowPath);
+            this.panelPath.Location = new System.Drawing.Point(9, 337);
+            this.panelPath.Name = "panelPath";
+            this.panelPath.Size = new System.Drawing.Size(308, 36);
+            this.panelPath.TabIndex = 9;
+            this.panelPath.Visible = false;
+            // 
+            // btnClearPath
+            // 
+            this.btnClearPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearPath.AutoEllipsis = true;
+            this.btnClearPath.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnClearPath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnClearPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnClearPath.Font = new System.Drawing.Font("Bahnschrift", 12F);
+            this.btnClearPath.ForeColor = System.Drawing.Color.IndianRed;
+            this.btnClearPath.Location = new System.Drawing.Point(275, 3);
+            this.btnClearPath.Name = "btnClearPath";
+            this.btnClearPath.Size = new System.Drawing.Size(30, 30);
+            this.btnClearPath.TabIndex = 1;
+            this.btnClearPath.Text = "X";
+            this.btnClearPath.UseVisualStyleBackColor = true;
+            this.btnClearPath.Click += new System.EventHandler(this.btnClearPath_Click);
+            // 
+            // btnShowPath
+            // 
+            this.btnShowPath.AllowDrop = true;
+            this.btnShowPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnShowPath.AutoEllipsis = true;
+            this.btnShowPath.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnShowPath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnShowPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnShowPath.Font = new System.Drawing.Font("Bahnschrift Light", 8F);
+            this.btnShowPath.Location = new System.Drawing.Point(3, 3);
+            this.btnShowPath.Name = "btnShowPath";
+            this.btnShowPath.Size = new System.Drawing.Size(266, 30);
+            this.btnShowPath.TabIndex = 0;
+            this.btnShowPath.Text = "No path set!";
+            this.btnShowPath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnShowPath.UseVisualStyleBackColor = true;
+            this.btnShowPath.Click += new System.EventHandler(this.btnShowPath_Click);
+            // 
+            // chkOpenAddressPrompt
+            // 
+            this.chkOpenAddressPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkOpenAddressPrompt.BackgroundImage = global::QuickLauncher.Properties.Resources.link;
+            this.chkOpenAddressPrompt.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.chkOpenAddressPrompt.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkOpenAddressPrompt.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.chkOpenAddressPrompt.FlatAppearance.BorderSize = 0;
+            this.chkOpenAddressPrompt.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.chkOpenAddressPrompt.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.chkOpenAddressPrompt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkOpenAddressPrompt.Location = new System.Drawing.Point(72, 384);
+            this.chkOpenAddressPrompt.Name = "chkOpenAddressPrompt";
+            this.chkOpenAddressPrompt.Size = new System.Drawing.Size(23, 23);
+            this.chkOpenAddressPrompt.TabIndex = 11;
+            this.chkOpenAddressPrompt.Tag = "inactive";
+            this.tooltipMain.SetToolTip(this.chkOpenAddressPrompt, "Clear the SPT temp files");
+            this.chkOpenAddressPrompt.UseVisualStyleBackColor = true;
+            this.chkOpenAddressPrompt.Click += new System.EventHandler(this.chkOpenAddressPrompt_Click);
+            // 
+            // chkTogglePath
+            // 
+            this.chkTogglePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkTogglePath.BackgroundImage = global::QuickLauncher.Properties.Resources.path;
+            this.chkTogglePath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.chkTogglePath.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkTogglePath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.chkTogglePath.FlatAppearance.BorderSize = 0;
+            this.chkTogglePath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.chkTogglePath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.chkTogglePath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkTogglePath.Location = new System.Drawing.Point(41, 384);
+            this.chkTogglePath.Name = "chkTogglePath";
+            this.chkTogglePath.Size = new System.Drawing.Size(23, 23);
+            this.chkTogglePath.TabIndex = 10;
+            this.chkTogglePath.Tag = "inactive";
+            this.tooltipMain.SetToolTip(this.chkTogglePath, "Clear the SPT temp files");
+            this.chkTogglePath.UseVisualStyleBackColor = true;
+            this.chkTogglePath.Click += new System.EventHandler(this.chkTogglePath_Click);
             // 
             // chkToggleMenu
             // 
@@ -211,83 +303,13 @@
             this.btnReload.UseVisualStyleBackColor = true;
             this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
             // 
-            // chkTogglePath
-            // 
-            this.chkTogglePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkTogglePath.BackgroundImage = global::QuickLauncher.Properties.Resources.path;
-            this.chkTogglePath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.chkTogglePath.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.chkTogglePath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.chkTogglePath.FlatAppearance.BorderSize = 0;
-            this.chkTogglePath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.chkTogglePath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.chkTogglePath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkTogglePath.Location = new System.Drawing.Point(41, 384);
-            this.chkTogglePath.Name = "chkTogglePath";
-            this.chkTogglePath.Size = new System.Drawing.Size(23, 23);
-            this.chkTogglePath.TabIndex = 10;
-            this.chkTogglePath.Tag = "inactive";
-            this.tooltipMain.SetToolTip(this.chkTogglePath, "Clear the SPT temp files");
-            this.chkTogglePath.UseVisualStyleBackColor = true;
-            this.chkTogglePath.Click += new System.EventHandler(this.chkTogglePath_Click);
-            // 
-            // panelPath
-            // 
-            this.panelPath.AllowDrop = true;
-            this.panelPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelPath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
-            this.panelPath.Controls.Add(this.btnClearPath);
-            this.panelPath.Controls.Add(this.btnShowPath);
-            this.panelPath.Location = new System.Drawing.Point(9, 337);
-            this.panelPath.Name = "panelPath";
-            this.panelPath.Size = new System.Drawing.Size(308, 36);
-            this.panelPath.TabIndex = 9;
-            this.panelPath.Visible = false;
-            // 
-            // btnClearPath
-            // 
-            this.btnClearPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearPath.AutoEllipsis = true;
-            this.btnClearPath.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnClearPath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.btnClearPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClearPath.Font = new System.Drawing.Font("Bahnschrift", 12F);
-            this.btnClearPath.ForeColor = System.Drawing.Color.IndianRed;
-            this.btnClearPath.Location = new System.Drawing.Point(275, 3);
-            this.btnClearPath.Name = "btnClearPath";
-            this.btnClearPath.Size = new System.Drawing.Size(30, 30);
-            this.btnClearPath.TabIndex = 1;
-            this.btnClearPath.Text = "X";
-            this.btnClearPath.UseVisualStyleBackColor = true;
-            this.btnClearPath.Click += new System.EventHandler(this.btnClearPath_Click);
-            // 
-            // btnShowPath
-            // 
-            this.btnShowPath.AllowDrop = true;
-            this.btnShowPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnShowPath.AutoEllipsis = true;
-            this.btnShowPath.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnShowPath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.btnShowPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShowPath.Font = new System.Drawing.Font("Bahnschrift Light", 8F);
-            this.btnShowPath.Location = new System.Drawing.Point(3, 3);
-            this.btnShowPath.Name = "btnShowPath";
-            this.btnShowPath.Size = new System.Drawing.Size(266, 30);
-            this.btnShowPath.TabIndex = 0;
-            this.btnShowPath.Text = "No path set!";
-            this.btnShowPath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnShowPath.UseVisualStyleBackColor = true;
-            this.btnShowPath.Click += new System.EventHandler(this.btnShowPath_Click);
-            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(326, 419);
+            this.Controls.Add(this.chkOpenAddressPrompt);
             this.Controls.Add(this.chkTogglePath);
             this.Controls.Add(this.panelPath);
             this.Controls.Add(this.chkToggleMenu);
@@ -331,6 +353,7 @@
         private System.Windows.Forms.Button btnShowPath;
         private System.Windows.Forms.Button chkTogglePath;
         private System.Windows.Forms.Button btnClearPath;
+        private System.Windows.Forms.Button chkOpenAddressPrompt;
     }
 }
 

@@ -94,16 +94,16 @@ namespace QuickLauncher
         private void mainForm_Load(object sender, EventArgs e)
         {
             // D:\SPT Iterations\4.0.0
-            currentDir = "D:\\SPT Iterations\\3.11 testing";
+            currentDir = "D:\\SPT Iterations\\4.0.0";
             // currentDir = Environment.CurrentDirectory;
 
             if (Directory.Exists(currentDir))
             {
-                string fikaPath = Path.Combine(currentDir, "BepInEx", "plugins", "Fika.Core.dll");
-                // string fikaCorePath = Path.Combine(fikaPath, "Fika.Core.dll");
+                string fikaPath = Path.Combine(currentDir, "BepInEx", "plugins", "Fika");
+                string fikaCorePath = Path.Combine(fikaPath, "Fika.Core.dll");
 
-                bool doesFikaCoreExist = File.Exists(fikaPath);
-                // bool doesFikaDLLExist = Directory.Exists(fikaCorePath);
+                bool doesFikaFolderExist = Directory.Exists(fikaPath);
+                bool doesFikaCoreExist = File.Exists(fikaCorePath);
 
                 lblLimit1.Select();
 
@@ -135,10 +135,10 @@ namespace QuickLauncher
                     btnShowPath.Text = currentDir;
                 }
 
-                string userFolder = Path.Combine(currentDir,  "user");
+                string userFolder = Path.Combine(currentDir, "SPT",  "user");
                 if (Directory.Exists(userFolder))
                 {
-                    if (doesFikaCoreExist)
+                    if (doesFikaFolderExist && doesFikaCoreExist)
                     {
                         isFikaInstalled = true;
 
@@ -170,6 +170,7 @@ namespace QuickLauncher
 
                         ipAddress = Properties.Settings.Default.fikaAddress;
                         currentAID = Properties.Settings.Default.fikaAID;
+                        akiPort = 6969;
                     }
                     else
                     {
@@ -198,7 +199,7 @@ namespace QuickLauncher
 
         private void clearTempFiles()
         {
-            string userFolder = Path.Combine(currentDir,  "user");
+            string userFolder = Path.Combine(currentDir, "SPT",  "user");
             bool userFolderExists = Directory.Exists(userFolder);
             if (userFolderExists)
             {
@@ -367,7 +368,7 @@ namespace QuickLauncher
 
                 try
                 {
-                    string userFolder = Path.Combine(currentDir,  "user");
+                    string userFolder = Path.Combine(currentDir, "SPT",  "user");
                     if (Directory.Exists(userFolder))
                     {
                         string profilesFolder = Path.Combine(userFolder, "profiles");
@@ -407,7 +408,7 @@ namespace QuickLauncher
 
                 try
                 {
-                    string userFolder = Path.Combine(currentDir,  "user");
+                    string userFolder = Path.Combine(currentDir, "SPT",  "user");
                     if (Directory.Exists(userFolder))
                     {
                         string profilesFolder = Path.Combine(userFolder, "profiles");
@@ -468,7 +469,7 @@ namespace QuickLauncher
                 this.Controls.Add(lbl);
             }
 
-            string portFile = Path.Combine(currentDir,  "SPT_Data");
+            string portFile = Path.Combine(currentDir, "SPT",  "SPT_Data");
             portFile = Path.Combine(portFile, "database", "server.json");
             bool portExists = File.Exists(portFile);
 
@@ -642,7 +643,7 @@ namespace QuickLauncher
         private string displayAID(string nickname)
         {
             string result = "";
-            string userFolder = Path.Combine(currentDir,  "user");
+            string userFolder = Path.Combine(currentDir, "SPT",  "user");
 
             bool userFolderExists = Directory.Exists(userFolder);
             if (userFolderExists)
@@ -1073,10 +1074,10 @@ namespace QuickLauncher
                 {
                     Task.Delay(500);
 
-                    Directory.SetCurrentDirectory(Path.Combine(currentDir));
+                    Directory.SetCurrentDirectory(Path.Combine(currentDir, "SPT"));
                     Process server = new Process();
 
-                    server.StartInfo.WorkingDirectory = Path.Combine(currentDir);
+                    server.StartInfo.WorkingDirectory = Path.Combine(currentDir, "SPT");
                     server.StartInfo.FileName = "SPT.Server.exe";
 
                     switch (shouldServerOpen)
@@ -1407,6 +1408,12 @@ namespace QuickLauncher
             {
                 clearTempFiles();
             }
+        }
+
+        private void chkOpenAddressPrompt_Click(object sender, EventArgs e)
+        {
+            AddressForm frm = new AddressForm();
+            frm.ShowDialog();
         }
     }
 }
