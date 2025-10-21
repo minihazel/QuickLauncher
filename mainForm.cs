@@ -37,6 +37,7 @@ namespace QuickLauncher
 
         // bools
         public bool shouldServerOpen = false;
+        public bool isFikaInstalled = false;
 
         // misc
         private Dictionary<Control, bool> originalControlStates = new Dictionary<Control, bool>();
@@ -93,11 +94,17 @@ namespace QuickLauncher
         private void mainForm_Load(object sender, EventArgs e)
         {
             // D:\SPT Iterations\4.0.0
-            // currentDir = "D:\\SPT Iterations\\4.0.0";
-            currentDir = Environment.CurrentDirectory;
+            currentDir = "D:\\SPT Iterations\\3.11 testing";
+            // currentDir = Environment.CurrentDirectory;
 
             if (Directory.Exists(currentDir))
             {
+                string fikaPath = Path.Combine(currentDir, "BepInEx", "plugins", "Fika.Core.dll");
+                // string fikaCorePath = Path.Combine(fikaPath, "Fika.Core.dll");
+
+                bool doesFikaCoreExist = File.Exists(fikaPath);
+                // bool doesFikaDLLExist = Directory.Exists(fikaCorePath);
+
                 lblLimit1.Select();
 
                 if (Properties.Settings.Default.serverToggle)
@@ -114,9 +121,13 @@ namespace QuickLauncher
                 }
 
                 if (Properties.Settings.Default.menuToggle)
+                {
                     panelBottom.Visible = true;
+                }
                 else
+                {
                     panelBottom.Visible = false;
+                }
 
                 if (Properties.Settings.Default.globalPath != "")
                 {
@@ -124,15 +135,53 @@ namespace QuickLauncher
                     btnShowPath.Text = currentDir;
                 }
 
-                string userFolder = Path.Combine(currentDir, "SPT", "user");
+                string userFolder = Path.Combine(currentDir,  "user");
                 if (Directory.Exists(userFolder))
                 {
-                    string profilesFolder = Path.Combine(userFolder, "profiles");
-                    if (Directory.Exists(profilesFolder))
-                        listProfiles(profilesFolder);
+                    if (doesFikaCoreExist)
+                    {
+                        isFikaInstalled = true;
+
+                        int widthspacer = 38;
+                        Label lbl = new Label();
+                        lbl.Text = "✔️ Connect to Fika Server";
+                        lbl.AutoSize = false;
+                        lbl.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right);
+                        lbl.TextAlign = ContentAlignment.MiddleLeft;
+                        lbl.Size = new Size(this.Size.Width - 4, widthspacer);
+                        lbl.Location = new Point(0, 1);
+                        lbl.Font = new Font("Bahnschrift Light", 12, FontStyle.Regular);
+                        lbl.BackColor = listBackcolor;
+                        lbl.ForeColor = Color.LightGray;
+                        lbl.Margin = new Padding(1, 1, 1, 1);
+                        lbl.Cursor = Cursors.Hand;
+                        lbl.MouseEnter += new EventHandler(lbl_MouseEnter);
+                        lbl.MouseLeave += new EventHandler(lbl_MouseLeave);
+                        lbl.MouseDown += new MouseEventHandler(profile_Clicked);
+                        lbl.MouseUp += new MouseEventHandler(lbl_MouseUp);
+                        this.Controls.Add(lbl);
+
+                        if (string.IsNullOrEmpty(Properties.Settings.Default.fikaAddress) &&
+                            string.IsNullOrEmpty(Properties.Settings.Default.fikaAID))
+                        {
+                            AddressForm frm = new AddressForm();
+                            frm.ShowDialog();
+                        }
+
+                        ipAddress = Properties.Settings.Default.fikaAddress;
+                        currentAID = Properties.Settings.Default.fikaAID;
+                    }
                     else
-                        exitApp("Couldn\'t detect the `profiles` folder.\n" +
-                            "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                    {
+                        isFikaInstalled = false;
+
+                        string profilesFolder = Path.Combine(userFolder, "profiles");
+                        if (Directory.Exists(profilesFolder))
+                            listProfiles(profilesFolder);
+                        else
+                            exitApp("Couldn\'t detect the `profiles` folder.\n" +
+                                "Please place this app in your SPT folder (where SPT.Server.exe is located)");
+                    }
                 }
                 else
                 {
@@ -149,7 +198,7 @@ namespace QuickLauncher
 
         private void clearTempFiles()
         {
-            string userFolder = Path.Combine(currentDir, "SPT", "user");
+            string userFolder = Path.Combine(currentDir,  "user");
             bool userFolderExists = Directory.Exists(userFolder);
             if (userFolderExists)
             {
@@ -318,7 +367,7 @@ namespace QuickLauncher
 
                 try
                 {
-                    string userFolder = Path.Combine(currentDir, "SPT", "user");
+                    string userFolder = Path.Combine(currentDir,  "user");
                     if (Directory.Exists(userFolder))
                     {
                         string profilesFolder = Path.Combine(userFolder, "profiles");
@@ -358,7 +407,7 @@ namespace QuickLauncher
 
                 try
                 {
-                    string userFolder = Path.Combine(currentDir, "SPT", "user");
+                    string userFolder = Path.Combine(currentDir,  "user");
                     if (Directory.Exists(userFolder))
                     {
                         string profilesFolder = Path.Combine(userFolder, "profiles");
@@ -419,7 +468,7 @@ namespace QuickLauncher
                 this.Controls.Add(lbl);
             }
 
-            string portFile = Path.Combine(currentDir, "SPT", "SPT_Data");
+            string portFile = Path.Combine(currentDir,  "SPT_Data");
             portFile = Path.Combine(portFile, "database", "server.json");
             bool portExists = File.Exists(portFile);
 
@@ -593,7 +642,7 @@ namespace QuickLauncher
         private string displayAID(string nickname)
         {
             string result = "";
-            string userFolder = Path.Combine(currentDir, "SPT", "user");
+            string userFolder = Path.Combine(currentDir,  "user");
 
             bool userFolderExists = Directory.Exists(userFolder);
             if (userFolderExists)
@@ -1005,75 +1054,83 @@ namespace QuickLauncher
 
         private void runServer()
         {
-            bool isRunning = isServerOn();
-            Task.Delay(500);
             this.Hide();
 
-            if (isRunning)
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.fikaAddress) && isFikaInstalled)
             {
-                checkWorker();
+                runTarkov();
             }
             else
             {
+                bool isRunning = isServerOn();
                 Task.Delay(500);
 
-                Directory.SetCurrentDirectory(Path.Combine(currentDir, "SPT"));
-                Process server = new Process();
-
-                server.StartInfo.WorkingDirectory = Path.Combine(currentDir, "SPT");
-                server.StartInfo.FileName = "SPT.Server.exe";
-
-                switch (shouldServerOpen)
+                if (isRunning)
                 {
-                    case true:
-                        server.StartInfo.CreateNoWindow = false;
-
-                        try
-                        {
-                            server.Start();
-                            checkWorker();
-                        }
-                        catch (Exception err)
-                        {
-                            Debug.WriteLine($"ERROR: {err}");
-                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
-                        }
-
-                        break;
-                    case false:
-                        server.StartInfo.CreateNoWindow = false;
-                        server.StartInfo.UseShellExecute = true;
-
-                        // server.StartInfo.RedirectStandardOutput = true;
-                        // server.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-                        // SetConsoleMode in the SPT server; TODO
-
-                        server.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                        server.OutputDataReceived += server_OutputDataReceived;
-                        server.Exited += server_Exited;
-
-                        try
-                        {
-                            serverOut = new StringBuilder();
-                            server.Start();
-                            // server.BeginOutputReadLine();
-                            checkWorker();
-                        }
-                        catch (Exception err)
-                        {
-                            Debug.WriteLine($"ERROR: {err}");
-                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
-                        }
-
-                        break;
+                    checkWorker();
                 }
+                else
+                {
+                    Task.Delay(500);
 
-                isServerOpen = new BackgroundWorker();
-                isServerOpen.DoWork += isServerOpen_DoWork;
-                isServerOpen.RunWorkerCompleted += isServerOpen_RunWorkerCompleted;
-                isServerOpen.RunWorkerAsync();
+                    Directory.SetCurrentDirectory(Path.Combine(currentDir));
+                    Process server = new Process();
 
-                Directory.SetCurrentDirectory(Environment.CurrentDirectory);
+                    server.StartInfo.WorkingDirectory = Path.Combine(currentDir);
+                    server.StartInfo.FileName = "SPT.Server.exe";
+
+                    switch (shouldServerOpen)
+                    {
+                        case true:
+                            server.StartInfo.CreateNoWindow = false;
+
+                            try
+                            {
+                                server.Start();
+                                checkWorker();
+                            }
+                            catch (Exception err)
+                            {
+                                Debug.WriteLine($"ERROR: {err}");
+                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
+                            }
+
+                            break;
+                        case false:
+                            server.StartInfo.CreateNoWindow = false;
+                            server.StartInfo.UseShellExecute = true;
+
+                            // server.StartInfo.RedirectStandardOutput = true;
+                            // server.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+                            // SetConsoleMode in the SPT server; TODO
+
+                            server.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                            server.OutputDataReceived += server_OutputDataReceived;
+                            server.Exited += server_Exited;
+
+                            try
+                            {
+                                serverOut = new StringBuilder();
+                                server.Start();
+                                // server.BeginOutputReadLine();
+                                checkWorker();
+                            }
+                            catch (Exception err)
+                            {
+                                Debug.WriteLine($"ERROR: {err}");
+                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.ToString()}", this.Text, MessageBoxButtons.OK);
+                            }
+
+                            break;
+                    }
+
+                    isServerOpen = new BackgroundWorker();
+                    isServerOpen.DoWork += isServerOpen_DoWork;
+                    isServerOpen.RunWorkerCompleted += isServerOpen_RunWorkerCompleted;
+                    isServerOpen.RunWorkerAsync();
+
+                    Directory.SetCurrentDirectory(Environment.CurrentDirectory);
+                }
             }
         }
 
@@ -1112,8 +1169,19 @@ namespace QuickLauncher
             Task.Delay(5000);
 
             ProcessStartInfo tarkovInfo = new ProcessStartInfo();
-            string name = Regex.Match(currentAID, @"^([\w\s]+)").Groups[1].Value.Trim();
-            string AID = displayAID(name) ?? "N/A";
+
+            string name = string.Empty;
+            string AID = string.Empty;
+
+            if (isFikaInstalled)
+            {
+                AID = Properties.Settings.Default.fikaAID;
+            }
+            else
+            {
+                name = Regex.Match(currentAID, @"^([\w\s]+)").Groups[1].Value.Trim();
+                AID = displayAID(name) ?? "N/A";
+            }
 
             if (AID == "N/A")
             {
@@ -1122,9 +1190,13 @@ namespace QuickLauncher
             }
             else
             {
+                if (isFikaInstalled)
+                {
+                    ipAddress = Properties.Settings.Default.fikaAddress;
+                }
+
                 tarkovInfo.FileName = Path.Combine(currentDir, "EscapeFromTarkov");
                 tarkovInfo.Arguments = $"-force-gfx-jobs native -token={AID} -config={{'BackendUrl':'https://{ipAddress}:{akiPort}','Version':'live','MatchingVersion':'live'}}";
-                Debug.WriteLine(AID);
 
                 Process gameProcess = new Process();
                 gameProcess.StartInfo = tarkovInfo;
