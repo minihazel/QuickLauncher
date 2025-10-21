@@ -117,5 +117,19 @@ namespace QuickLauncher
                 lblSanitizedInput.Text = "Sanitized input: " + purifiedIP;
             }
         }
+
+        private void btnResetSettings_Click(object sender, EventArgs e)
+        {
+            string content = "Reset Fika settings?";
+            if (MessageBox.Show(content, Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                Properties.Settings.Default.fikaAddress = string.Empty;
+                Properties.Settings.Default.fikaAID = string.Empty;
+
+                Properties.Settings.Default.Save();
+
+                Close();
+            }
+        }
     }
 }
