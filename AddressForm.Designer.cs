@@ -39,6 +39,7 @@
             this.btnClearProfile = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lblSanitizedInput = new System.Windows.Forms.Label();
+            this.btnResetSettings = new System.Windows.Forms.Button();
             this.panelAddress.SuspendLayout();
             this.panelProfile.SuspendLayout();
             this.SuspendLayout();
@@ -156,7 +157,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Bahnschrift Light", 10F);
             this.label1.ForeColor = System.Drawing.Color.Gray;
-            this.label1.Location = new System.Drawing.Point(9, 124);
+            this.label1.Location = new System.Drawing.Point(9, 114);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(332, 34);
             this.label1.TabIndex = 14;
@@ -174,12 +175,27 @@
             this.lblSanitizedInput.TabIndex = 15;
             this.lblSanitizedInput.Text = "Sanitized input:";
             // 
+            // btnResetSettings
+            // 
+            this.btnResetSettings.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnResetSettings.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnResetSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnResetSettings.ForeColor = System.Drawing.Color.Silver;
+            this.btnResetSettings.Location = new System.Drawing.Point(317, 153);
+            this.btnResetSettings.Name = "btnResetSettings";
+            this.btnResetSettings.Size = new System.Drawing.Size(144, 33);
+            this.btnResetSettings.TabIndex = 16;
+            this.btnResetSettings.Text = "♻️ Reset settings";
+            this.btnResetSettings.UseVisualStyleBackColor = true;
+            this.btnResetSettings.Click += new System.EventHandler(this.btnResetSettings_Click);
+            // 
             // AddressForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(668, 207);
+            this.Controls.Add(this.btnResetSettings);
             this.Controls.Add(this.lblSanitizedInput);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panelProfile);
@@ -218,5 +234,6 @@
         private System.Windows.Forms.Button btnClearProfile;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblSanitizedInput;
+        private System.Windows.Forms.Button btnResetSettings;
     }
 }
