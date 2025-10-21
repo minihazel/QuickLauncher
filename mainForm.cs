@@ -904,31 +904,34 @@ namespace QuickLauncher
             bool akiLauncherTerminated = false;
             bool eftTerminated = false;
 
-            try
+            if (!isFikaInstalled)
             {
-                Process[] procs = Process.GetProcessesByName(akiServerProcess);
-                if (procs != null && procs.Length > 0)
+                try
                 {
-                    foreach (Process aki in procs)
+                    Process[] procs = Process.GetProcessesByName(akiServerProcess);
+                    if (procs != null && procs.Length > 0)
                     {
-                        if (!aki.HasExited)
+                        foreach (Process aki in procs)
                         {
-                            if (!aki.CloseMainWindow())
+                            if (!aki.HasExited)
                             {
-                                aki.Kill();
-                                aki.WaitForExit();
-                            }
-                            else
-                            {
-                                aki.WaitForExit();
+                                if (!aki.CloseMainWindow())
+                                {
+                                    aki.Kill();
+                                    aki.WaitForExit();
+                                }
+                                else
+                                {
+                                    aki.WaitForExit();
+                                }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception err)
-            {
-                Debug.WriteLine($"TERMINATION FAILURE OF SPT SERVER (IGNORE): {err.ToString()}");
+                catch (Exception err)
+                {
+                    Debug.WriteLine($"TERMINATION FAILURE OF SPT SERVER (IGNORE): {err.ToString()}");
+                }
             }
 
             Task.Delay(200);
@@ -993,16 +996,23 @@ namespace QuickLauncher
 
             try
             {
-                Process[] procs1 = Process.GetProcessesByName(akiServerProcess);
-                if (procs1 != null && procs1.Length > 0)
+                if (!isFikaInstalled)
                 {
+                    Process[] procs1 = Process.GetProcessesByName(akiServerProcess);
+                    if (procs1 != null && procs1.Length > 0)
+                    {
+                    }
+                    else
+                    {
+                        akiServerTerminated = true;
+                    }
                 }
                 else
                 {
                     akiServerTerminated = true;
                 }
 
-                Process[] procs2 = Process.GetProcessesByName(akiLauncherProcess);
+                    Process[] procs2 = Process.GetProcessesByName(akiLauncherProcess);
                 if (procs2 != null && procs2.Length > 0)
                 {
                 }

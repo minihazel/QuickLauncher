@@ -38,6 +38,7 @@
             this.valueProfile = new System.Windows.Forms.TextBox();
             this.btnClearProfile = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.lblSanitizedInput = new System.Windows.Forms.Label();
             this.panelAddress.SuspendLayout();
             this.panelProfile.SuspendLayout();
             this.SuspendLayout();
@@ -64,6 +65,7 @@
             this.valueAddress.Size = new System.Drawing.Size(602, 27);
             this.valueAddress.TabIndex = 2;
             this.valueAddress.Text = "https://127.0.0.1:6969";
+            this.valueAddress.TextChanged += new System.EventHandler(this.valueAddress_TextChanged);
             // 
             // btnClearAddress
             // 
@@ -148,6 +150,7 @@
             this.btnClearProfile.TabIndex = 1;
             this.btnClearProfile.Text = "X";
             this.btnClearProfile.UseVisualStyleBackColor = true;
+            this.btnClearProfile.Click += new System.EventHandler(this.btnClearProfile_Click);
             // 
             // label1
             // 
@@ -161,12 +164,24 @@
             this.label1.Text = "Insert the AID from your profile and remove `.json`\r\nExample: 68eacb98ba8fa004842" +
     "fbc42.json";
             // 
+            // lblSanitizedInput
+            // 
+            this.lblSanitizedInput.AutoSize = true;
+            this.lblSanitizedInput.Font = new System.Drawing.Font("Bahnschrift Light", 9F);
+            this.lblSanitizedInput.ForeColor = System.Drawing.Color.Gray;
+            this.lblSanitizedInput.Location = new System.Drawing.Point(12, 46);
+            this.lblSanitizedInput.Name = "lblSanitizedInput";
+            this.lblSanitizedInput.Size = new System.Drawing.Size(89, 14);
+            this.lblSanitizedInput.TabIndex = 15;
+            this.lblSanitizedInput.Text = "Sanitized input:";
+            // 
             // AddressForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(668, 207);
+            this.Controls.Add(this.lblSanitizedInput);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panelProfile);
             this.Controls.Add(this.btnApply);
@@ -203,5 +218,6 @@
         private System.Windows.Forms.TextBox valueProfile;
         private System.Windows.Forms.Button btnClearProfile;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblSanitizedInput;
     }
 }
