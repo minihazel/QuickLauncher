@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -17,6 +18,19 @@ namespace QuickLauncher
         public AddressForm()
         {
             InitializeComponent();
+        }
+
+        private void AddressForm_Load(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.fikaAddress))
+            {
+                valueAddress.Text = "https://" + Properties.Settings.Default.fikaAddress + ":6969";
+            }
+
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.fikaAID))
+            {
+                valueProfile.Text = Properties.Settings.Default.fikaAID;
+            }
         }
 
         public bool TryPurifyAndValidateIp(string input, out string purifiedIp)
@@ -84,15 +98,9 @@ namespace QuickLauncher
                 aid = aid.Replace(".json", string.Empty);
             }
 
-            if (ip.Contains(":"))
-            {
-                string content = "Please remove the port from the IP address.";
-                MessageBox.Show(content, Text, MessageBoxButtons.OK);
-                return;
-            }
-
             if (TryPurifyAndValidateIp(ip, out string purifiedIP))
             {
+                Debug.WriteLine(purifiedIP);
                 string content = "Apply settings?";
                 if (MessageBox.Show(content, Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {

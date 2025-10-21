@@ -30,9 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddressForm));
             this.panelAddress = new System.Windows.Forms.Panel();
+            this.valueAddress = new System.Windows.Forms.TextBox();
             this.btnClearAddress = new System.Windows.Forms.Button();
             this.btnConfused = new System.Windows.Forms.Button();
-            this.valueAddress = new System.Windows.Forms.TextBox();
             this.btnApply = new System.Windows.Forms.Button();
             this.panelProfile = new System.Windows.Forms.Panel();
             this.valueProfile = new System.Windows.Forms.TextBox();
@@ -54,6 +54,16 @@
             this.panelAddress.Name = "panelAddress";
             this.panelAddress.Size = new System.Drawing.Size(644, 36);
             this.panelAddress.TabIndex = 10;
+            // 
+            // valueAddress
+            // 
+            this.valueAddress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.valueAddress.ForeColor = System.Drawing.Color.Silver;
+            this.valueAddress.Location = new System.Drawing.Point(3, 4);
+            this.valueAddress.Name = "valueAddress";
+            this.valueAddress.Size = new System.Drawing.Size(602, 27);
+            this.valueAddress.TabIndex = 2;
+            this.valueAddress.Text = "https://127.0.0.1:6969";
             // 
             // btnClearAddress
             // 
@@ -85,16 +95,6 @@
             this.btnConfused.Text = "❓ Confused?";
             this.btnConfused.UseVisualStyleBackColor = true;
             this.btnConfused.Click += new System.EventHandler(this.btnConfused_Click);
-            // 
-            // valueAddress
-            // 
-            this.valueAddress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.valueAddress.ForeColor = System.Drawing.Color.Silver;
-            this.valueAddress.Location = new System.Drawing.Point(3, 4);
-            this.valueAddress.Name = "valueAddress";
-            this.valueAddress.Size = new System.Drawing.Size(602, 27);
-            this.valueAddress.TabIndex = 2;
-            this.valueAddress.Text = "https://127.0.0.1:6969";
             // 
             // btnApply
             // 
@@ -176,12 +176,13 @@
             this.ForeColor = System.Drawing.Color.LightGray;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AddressForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Address";
+            this.Load += new System.EventHandler(this.AddressForm_Load);
             this.panelAddress.ResumeLayout(false);
             this.panelAddress.PerformLayout();
             this.panelProfile.ResumeLayout(false);
