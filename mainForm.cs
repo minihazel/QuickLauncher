@@ -94,8 +94,8 @@ namespace QuickLauncher
         private void mainForm_Load(object sender, EventArgs e)
         {
             // D:\SPT Iterations\4.0.0
-            currentDir = "D:\\SPT Iterations\\4.0.0";
-            // currentDir = Environment.CurrentDirectory;
+            // currentDir = "D:\\SPT Iterations\\4.0.0";
+            currentDir = Environment.CurrentDirectory;
 
             if (Directory.Exists(currentDir))
             {
